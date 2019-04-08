@@ -13,7 +13,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\..\Graft.Algorithms\Graft.Algorithms.csproj" />
+    <ProjectReference Include="..\..\src\Graft.Algorithms\Graft.Algorithms.csproj" />
     <ProjectReference Include="..\..\src\Graft\Graft.csproj" />
   </ItemGroup>
 

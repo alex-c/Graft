@@ -5,7 +5,7 @@ VisualStudioVersion = 15.0.28307.271
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Graft", "src\Graft\Graft.csproj", "{1F1DA8E4-A44F-44D2-8F4B-88DA14D72C7A}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Graft.Algorithms", "Graft.Algorithms\Graft.Algorithms.csproj", "{70798768-6166-44E5-AE8B-438ECD3FF2DC}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Graft.Algorithms", "src\Graft.Algorithms\Graft.Algorithms.csproj", "{70798768-6166-44E5-AE8B-438ECD3FF2DC}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Graft.Algorithms.Test", "test\Graft.Algorithms.Test\Graft.Algorithms.Test.csproj", "{B2266D4C-4EC6-41AB-9B88-E17B3DC63EE5}"
 EndProject
