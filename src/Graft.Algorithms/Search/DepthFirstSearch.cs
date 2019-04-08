@@ -5,7 +5,7 @@ using System.Linq;
 
 namespace Graft.Algorithms.Search
 {
-    public static class BreadthFirstSearch
+    public static class DepthFirstSearch
     {
         public static void Search<T>(IGraph<T> graph, Action<IVertex<T>> action)
         {
@@ -15,15 +15,15 @@ namespace Graft.Algorithms.Search
 
         public static void Search<T>(IGraph<T> graph, IVertex<T> startingVertex, Action<IVertex<T>> action)
         {
-            Queue<IVertex<T>> verteces = new Queue<IVertex<T>>();
+            Stack<IVertex<T>> verteces = new Stack<IVertex<T>>();
             List<T> visited = new List<T>();
 
-            verteces.Enqueue(startingVertex);
+            verteces.Push(startingVertex);
 
             while (verteces.Any())
             {
                 // Get next vertex to visit
-                IVertex<T> vertex = verteces.Dequeue();
+                IVertex<T> vertex = verteces.Pop();
 
                 // Mark vertex as visited
                 visited.Add(vertex.Value);
@@ -36,7 +36,7 @@ namespace Graft.Algorithms.Search
                 {
                     if (!visited.Contains(adjacentVertex.Value))
                     {
-                        verteces.Enqueue(adjacentVertex);
+                        verteces.Push(adjacentVertex);
                     }
                 }
             }

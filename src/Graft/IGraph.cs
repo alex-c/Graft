@@ -6,6 +6,8 @@ namespace Graft
 {
     public interface IGraph<T>
     {
+        bool IsDirected { get; }
+
         IVertex<T> GetFirstVertex();
 
         IVertex<T> GetFirstMatchingVertex(Func<IVertex<T>, bool> filter);

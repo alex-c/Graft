@@ -1,13 +1,17 @@
 ﻿namespace Graft.Primitives
 {
-    public interface IEdge<T>
+    public interface IEdge<TV, TW>
     {
-        T GetWeight();
+        IVertex<TV> TargetVertex { get; }
 
-        void HasAttribute(string attribute);
+        TW Weight { get; }
+
+        bool HasAttribute(string attribute);
 
         void SetAttribute(string attribute, object value);
 
         object GetAttribute(string attribute);
+
+        bool TryGetAttribute(string attribute, out object value);
     }
 }
