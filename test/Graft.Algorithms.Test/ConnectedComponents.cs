@@ -4,7 +4,6 @@ using Graft.Default.File;
 using Graft.Primitives;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System.Collections.Generic;
-using System.Diagnostics;
 
 namespace Graft.Algorithms.Test
 {
@@ -63,7 +62,7 @@ namespace Graft.Algorithms.Test
             IGraph<int> graph = ReadGraphFromFile("./graphs/Graph_ganzgross.txt");
             int components = CountConnectedComponents(graph);
 
-            Assert.AreEqual(306, components);
+            Assert.AreEqual(9560, components);
         }
 
         [TestMethod]
@@ -72,7 +71,7 @@ namespace Graft.Algorithms.Test
             IGraph<int> graph = ReadGraphFromFile("./graphs/Graph_ganzganzgross.txt");
             int components = CountConnectedComponents(graph);
 
-            Assert.AreEqual(9560, components);
+            Assert.AreEqual(306, components);
         }
 
         private IGraph<int> ReadGraphFromFile(string filePath)
@@ -89,9 +88,7 @@ namespace Graft.Algorithms.Test
             while (nextComponent != null)
             {
                 BreadthFirstSearch.Search(graph, nextComponent, v => visitedVerteces.Add(v.Value));
-
                 connectedComponents++;
-
                 nextComponent = graph.GetFirstMatchingVertex(v => !visitedVerteces.Contains(v.Value));
             }
 
