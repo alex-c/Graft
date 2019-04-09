@@ -5,7 +5,7 @@ namespace Graft.Default
 {
     public class GraphFactory
     {
-        Graph<TV, TW> CreateGraphFromFile<TV, TW>(string filePath, IGraphTextLineReader<TV, TW> reader, bool directed = false)
+        public Graph<TV, TW> CreateGraphFromFile<TV, TW>(string filePath, IGraphTextLineParser<TV, TW> parser, bool directed = false)
         {
             FileInfo file = new FileInfo(filePath);
             if (file.Exists)
@@ -16,7 +16,7 @@ namespace Graft.Default
                     string line = null;
                     while ((line = streamReader.ReadLine()) != null)
                     {
-                        reader.ReadLine(line, builder);
+                        parser.ParseLine(line, builder);
                     }
                 }
                 return builder.Build();

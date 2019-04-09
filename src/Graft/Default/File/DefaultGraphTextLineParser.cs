@@ -1,8 +1,8 @@
 ﻿namespace Graft.Default.File
 {
-    public class DefaultGraphTextLineReader : IGraphTextLineReader<int, double>
+    public class DefaultGraphTextLineParser : IGraphTextLineParser<int, double>
     {
-        public void ReadLine(string line, GraphBuilder<int, double> builder)
+        public void ParseLine(string line, GraphBuilder<int, double> builder)
         {
             string[] components = line.Split('\t');
             switch (components.Length)

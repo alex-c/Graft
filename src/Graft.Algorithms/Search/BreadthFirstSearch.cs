@@ -16,7 +16,7 @@ namespace Graft.Algorithms.Search
         public static void Search<T>(IGraph<T> graph, IVertex<T> startingVertex, Action<IVertex<T>> action)
         {
             Queue<IVertex<T>> verteces = new Queue<IVertex<T>>();
-            List<T> visited = new List<T>();
+            HashSet<T> visited = new HashSet<T>();
 
             verteces.Enqueue(startingVertex);
 
@@ -34,7 +34,7 @@ namespace Graft.Algorithms.Search
                 // Enqueue adjacent verteces that have not been visited yet
                 foreach (IVertex<T> adjacentVertex in graph.GetAdjacentVerteces(vertex))
                 {
-                    if (!visited.Contains(adjacentVertex.Value))
+                    if (!visited.Contains(adjacentVertex.Value) && !verteces.Contains(adjacentVertex))
                     {
                         verteces.Enqueue(adjacentVertex);
                     }
