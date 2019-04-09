@@ -18,15 +18,15 @@ namespace Graft.Algorithms.Search
             Queue<IVertex<T>> verteces = new Queue<IVertex<T>>();
             HashSet<T> visited = new HashSet<T>();
 
+            // Starting vertex
             verteces.Enqueue(startingVertex);
+            visited.Add(startingVertex.Value);
 
+            // Traverse graph
             while (verteces.Any())
             {
                 // Get next vertex to visit
                 IVertex<T> vertex = verteces.Dequeue();
-
-                // Mark vertex as visited
-                visited.Add(vertex.Value);
 
                 // Apply action
                 action(vertex);
@@ -34,9 +34,10 @@ namespace Graft.Algorithms.Search
                 // Enqueue adjacent verteces that have not been visited yet
                 foreach (IVertex<T> adjacentVertex in graph.GetAdjacentVerteces(vertex))
                 {
-                    if (!visited.Contains(adjacentVertex.Value) && !verteces.Contains(adjacentVertex))
+                    if (!visited.Contains(adjacentVertex.Value))
                     {
                         verteces.Enqueue(adjacentVertex);
+                        visited.Add(adjacentVertex.Value);
                     }
                 }
             }
