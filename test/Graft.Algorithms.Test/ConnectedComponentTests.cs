@@ -8,13 +8,13 @@ using System.Collections.Generic;
 namespace Graft.Algorithms.Test
 {
     [TestClass]
-    public class ConnectedComponents
+    public class ConnectedComponentTests
     {
         private GraphFactory Factory { get; }
 
         private DefaultGraphTextLineParser Parser { get; }
 
-        public ConnectedComponents()
+        public ConnectedComponentTests()
         {
             Factory = new GraphFactory();
             Parser = new DefaultGraphTextLineParser();
@@ -24,7 +24,7 @@ namespace Graft.Algorithms.Test
         public void TestTinyGraph()
         {
             IGraph<int> graph = ReadGraphFromFile("./graphs/Graph1.txt");
-            int components = CountConnectedComponents(graph);
+            int components = ConnectedComponents.Count(graph);
 
             Assert.AreEqual(2, components);
         }
@@ -33,7 +33,7 @@ namespace Graft.Algorithms.Test
         public void TestSmallGraph()
         {
             IGraph<int> graph = ReadGraphFromFile("./graphs/Graph2.txt");
-            int components = CountConnectedComponents(graph);
+            int components = ConnectedComponents.Count(graph);
 
             Assert.AreEqual(4, components);
         }
@@ -42,7 +42,7 @@ namespace Graft.Algorithms.Test
         public void TestMediumGraph()
         {
             IGraph<int> graph = ReadGraphFromFile("./graphs/Graph3.txt");
-            int components = CountConnectedComponents(graph);
+            int components = ConnectedComponents.Count(graph);
 
             Assert.AreEqual(4, components);
         }
@@ -51,7 +51,7 @@ namespace Graft.Algorithms.Test
         public void TestBigGraph()
         {
             IGraph<int> graph = ReadGraphFromFile("./graphs/Graph_gross.txt");
-            int components = CountConnectedComponents(graph);
+            int components = ConnectedComponents.Count(graph);
 
             Assert.AreEqual(222, components);
         }
@@ -60,7 +60,7 @@ namespace Graft.Algorithms.Test
         public void TestReallyBigGraph()
         {
             IGraph<int> graph = ReadGraphFromFile("./graphs/Graph_ganzgross.txt");
-            int components = CountConnectedComponents(graph);
+            int components = ConnectedComponents.Count(graph);
 
             Assert.AreEqual(9560, components);
         }
@@ -69,7 +69,7 @@ namespace Graft.Algorithms.Test
         public void TestHugeGraph()
         {
             IGraph<int> graph = ReadGraphFromFile("./graphs/Graph_ganzganzgross.txt");
-            int components = CountConnectedComponents(graph);
+            int components = ConnectedComponents.Count(graph);
 
             Assert.AreEqual(306, components);
         }
@@ -77,22 +77,6 @@ namespace Graft.Algorithms.Test
         private IGraph<int> ReadGraphFromFile(string filePath)
         {
             return Factory.CreateGraphFromFile(filePath, Parser, false);
-        }
-
-        private int CountConnectedComponents(IGraph<int> graph)
-        {
-            HashSet<int> visitedVerteces = new HashSet<int>();
-            IVertex<int> nextComponent = graph.GetFirstVertex();
-            int connectedComponents = 0;
-
-            while (nextComponent != null)
-            {
-                BreadthFirstSearch.Search(graph, nextComponent, v => visitedVerteces.Add(v.Value));
-                connectedComponents++;
-                nextComponent = graph.GetFirstMatchingVertex(v => !visitedVerteces.Contains(v.Value));
-            }
-
-            return connectedComponents;
         }
     }
 }
