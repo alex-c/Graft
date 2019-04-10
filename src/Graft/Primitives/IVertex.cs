@@ -1,6 +1,6 @@
 ﻿namespace Graft.Primitives
 {
-    public interface IVertex<T>
+    public interface IVertex<T> : IPrimitive
     {
         T Value { get; }
     }
