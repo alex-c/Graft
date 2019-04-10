@@ -4,7 +4,7 @@ using System.Collections.Generic;
 
 namespace Graft
 {
-    public interface IGraph<T>
+    public interface IGraph<T> : IPrimitive
     {
         bool IsDirected { get; }
 
