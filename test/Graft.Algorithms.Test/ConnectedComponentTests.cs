@@ -1,9 +1,6 @@
-﻿using Graft.Algorithms.Search;
-using Graft.Default;
+﻿using Graft.Default;
 using Graft.Default.File;
-using Graft.Primitives;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
-using System.Collections.Generic;
 
 namespace Graft.Algorithms.Test
 {
