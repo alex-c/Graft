@@ -1,9 +1,11 @@
 ﻿namespace Graft.Primitives
 {
-    public interface IEdge<TV, TW> : IPrimitive
+    public interface IEdge<TV> : IPrimitive
     {
-        IVertex<TV> TargetVertex { get; }
+        bool IsDirected { get; }
 
-        TW Weight { get; }
+        IVertex<TV> OriginVertex { get; }
+
+        IVertex<TV> TargetVertex { get; }
     }
 }

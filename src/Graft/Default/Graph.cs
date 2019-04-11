@@ -5,17 +5,17 @@ using System.Linq;
 
 namespace Graft.Default
 {
-    public class Graph<TV, TW> : IGraph<TV>
+    public class Graph<TV, TW> : IWeightedGraph<TV, TW> where TV: IEquatable<TV>
     {
-        private List<Vertex<TV>> Verteces { get; }
+        private HashSet<Vertex<TV>> Verteces { get; }
 
-        private Dictionary<TV, List<Edge<TV, TW>>> Adjacency { get; }
+        private Dictionary<TV, HashSet<Edge<TV, TW>>> Adjacency { get; }
 
         public bool IsDirected { get; }
 
-        public Graph(bool isDirected = false) : this(new List<Vertex<TV>>(), new Dictionary<TV, List<Edge<TV, TW>>>(), isDirected) { }
+        public Graph(bool isDirected = false) : this(new HashSet<Vertex<TV>>(), new Dictionary<TV, HashSet<Edge<TV, TW>>>(), isDirected) { }
 
-        public Graph(List <Vertex<TV>> verteces, Dictionary<TV, List<Edge<TV, TW>>> adjacency, bool isDirected = false)
+        public Graph(HashSet<Vertex<TV>> verteces, Dictionary<TV, HashSet<Edge<TV, TW>>> adjacency, bool isDirected = false)
         {
             Verteces = verteces;
             Adjacency = adjacency;
@@ -33,21 +33,26 @@ namespace Graft.Default
             return Verteces.FirstOrDefault(filter);
         }
 
-        public IEnumerable<IVertex<TV>> GetVerteces()
+        public IEnumerable<IVertex<TV>> GetAllVerteces()
         {
             return Verteces;
         }
 
-        public IEnumerable<IVertex<TV>> GetMatchingVerteces(Func<IVertex<TV>, bool> filter)
+        public IEnumerable<IVertex<TV>> GetAllMatchingVerteces(Func<IVertex<TV>, bool> filter)
         {
             return Verteces.Where(filter);
         }
 
-        public IEnumerable<IVertex<TV>> GetAdjacentVerteces(TV value)
+        public IEnumerable<IVertex<TV>> GetAdjacentVerteces(IVertex<TV> vertex)
         {
-            if (Contains(value))
+            return GetAdjacentVerteces(vertex.Value);
+        }
+
+        public IEnumerable<IVertex<TV>> GetAdjacentVerteces(TV vertexValue)
+        {
+            if (ContainsVertex(vertexValue))
             {
-                Adjacency.TryGetValue(value, out List<Edge<TV, TW>> edges);
+                Adjacency.TryGetValue(vertexValue, out HashSet<Edge<TV, TW>> edges);
                 return edges.Select(e => e.TargetVertex);
             }
             else
@@ -56,17 +61,45 @@ namespace Graft.Default
             }
         }
 
-        public IEnumerable<IVertex<TV>> GetAdjacentVerteces(IVertex<TV> vertex)
+        public bool ContainsVertex(IVertex<TV> vertex)
         {
-            return GetAdjacentVerteces(vertex.Value);
+            return Verteces.Contains(vertex);
         }
 
-        private bool Contains(TV value)
+        public bool ContainsVertex(TV vertexValue)
         {
-            return Adjacency.Keys.Contains(value);
+            return Adjacency.Keys.Contains(vertexValue);
         }
 
         #endregion
 
+        #region Edge access
+
+        public IEnumerable<IWeightedEdge<TV, TW>> GetEdges()
+        {
+            HashSet<IWeightedEdge<TV, TW>> allEdges = new HashSet<IWeightedEdge<TV, TW>>();
+            foreach (HashSet<Edge<TV, TW>> edgeList in Adjacency.Values)
+            {
+                allEdges.UnionWith(edgeList);
+            }
+            return allEdges;
+        }
+
+        IEnumerable<IEdge<TV>> IGraph<TV>.GetEdges()
+        {
+            return GetEdges();
+        }
+
+        public IWeightedEdge<TV, TW> GetEdgesOfVertex(IVertex<TV> vertex)
+        {
+            throw new NotImplementedException();
+        }
+
+        IEdge<TV> IGraph<TV>.GetEdgesOfVertex(IVertex<TV> vertex)
+        {
+            return GetEdgesOfVertex(vertex);
+        }
+
+        #endregion
     }
 }

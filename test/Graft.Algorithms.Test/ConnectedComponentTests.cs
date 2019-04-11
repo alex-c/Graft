@@ -7,13 +7,13 @@ namespace Graft.Algorithms.Test
     [TestClass]
     public class ConnectedComponentTests
     {
-        private GraphFactory Factory { get; }
+        private GraphFactory<int, double> Factory { get; }
 
         private DefaultGraphTextLineParser Parser { get; }
 
         public ConnectedComponentTests()
         {
-            Factory = new GraphFactory();
+            Factory = new GraphFactory<int, double>();
             Parser = new DefaultGraphTextLineParser();
         }
 

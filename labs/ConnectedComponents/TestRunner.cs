@@ -10,7 +10,7 @@ namespace Graft.Labs.ConnectedComponents
     {
         private const string PATH = "./graphs/";
 
-        private GraphFactory Factory { get; }
+        private GraphFactory<int, double> Factory { get; }
 
         private DefaultGraphTextLineParser Parser { get; }
 
@@ -20,7 +20,7 @@ namespace Graft.Labs.ConnectedComponents
 
         public TestRunner()
         {
-            Factory = new GraphFactory();
+            Factory = new GraphFactory<int, double>();
             Parser = new DefaultGraphTextLineParser();
             Files = new HashSet<string>();
             Graphs = new Dictionary<string, IGraph<int>>();
@@ -56,10 +56,10 @@ namespace Graft.Labs.ConnectedComponents
         {
             Stopwatch sw = new Stopwatch();
             sw.Start();
-            Graft.Algorithms.ConnectedComponents.Count(graph);
+            int cc = Algorithms.ConnectedComponents.Count(graph);
             sw.Stop();
 
-            Console.WriteLine($" + Counted connected components of '{file}' in {sw.Elapsed}.");
+            Console.WriteLine($" + Counted {cc} connected components of '{file}' in {sw.Elapsed}.");
         }
 
         private IGraph<int> ReadGraphFromFile(string fileName)

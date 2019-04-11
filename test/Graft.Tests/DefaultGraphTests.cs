@@ -14,19 +14,18 @@ namespace Graft.Tests
 
         public DefaultGraphTests()
         {
-            List<Vertex<int>> verteces = new List<Vertex<int>>()
+            Dictionary<int, HashSet<Edge<int, double>>> edges = new Dictionary<int, HashSet<Edge<int, double>>>();
+            Dictionary<int, Vertex<int>> vertexMap = new Dictionary<int, Vertex<int>>();
+            for (int i = 1; i < 5; i++)
             {
-                new Vertex<int>(1),
-                new Vertex<int>(2),
-                new Vertex<int>(3),
-                new Vertex<int>(4)
-            };
-            Dictionary<int, List<Edge<int, double>>> edges = new Dictionary<int, List<Edge<int, double>>>
-            {
-                { 1, new List<Edge<int, double>>() { new Edge<int, double>(verteces[1]) } },
-                { 2, new List<Edge<int, double>>() { new Edge<int, double>(verteces[2]) } },
-                { 3, new List<Edge<int, double>>() { new Edge<int, double>(verteces[0]), new Edge<int, double>(verteces[3]) } }
-            };
+                vertexMap.Add(i, new Vertex<int>(i));
+                edges.Add(i, new HashSet<Edge<int, double>>());
+            }
+            HashSet<Vertex<int>> verteces = new HashSet<Vertex<int>>(vertexMap.Values);
+            edges[1].Add(new Edge<int, double>(vertexMap[1], vertexMap[2]));
+            edges[2].Add(new Edge<int, double>(vertexMap[2], vertexMap[3]));
+            edges[3].Add(new Edge<int, double>(vertexMap[3], vertexMap[1]));
+            edges[3].Add(new Edge<int, double>(vertexMap[3], vertexMap[4]));
             TestGraph = new Graph<int, double>(verteces, edges);
         }
 
@@ -36,7 +35,7 @@ namespace Graft.Tests
             Assert.AreEqual(false, TestGraph.IsDirected);
             Assert.AreEqual(1, TestGraph.GetFirstVertex().Value);
             Assert.AreEqual(2, TestGraph.GetFirstMatchingVertex(v => v.Value == 2).Value);
-            Assert.AreEqual(4, TestGraph.GetVerteces().Count());
+            Assert.AreEqual(4, TestGraph.GetAllVerteces().Count());
             Assert.AreEqual(2, TestGraph.GetAdjacentVerteces(3).Count());
         }
     }

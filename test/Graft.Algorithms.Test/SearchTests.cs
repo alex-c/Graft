@@ -14,7 +14,7 @@ namespace Graft.Algorithms.Test
 
         public SearchTests()
         {
-            GraphFactory factory = new GraphFactory();
+            GraphFactory<int, double> factory = new GraphFactory<int, double>();
             Graph = factory.CreateGraphFromFile("./graphs/Graph1.txt", new DefaultGraphTextLineParser());
         }
 
@@ -23,7 +23,7 @@ namespace Graft.Algorithms.Test
         {
             List<int> traversalOrder = new List<int>();
 
-            BreadthFirstSearch.Search(Graph, v => traversalOrder.Add(v.Value));
+            BreadthFirstSearch.Traverse(Graph, v => traversalOrder.Add(v.Value));
 
             Assert.AreEqual(7, traversalOrder.Count);
             CollectionAssert.AreEqual(new List<int> { 0, 6, 9, 13, 3, 5, 10 }, traversalOrder);
@@ -35,7 +35,7 @@ namespace Graft.Algorithms.Test
             List<int> traversalOrder = new List<int>();
 
             IVertex<int> startingVertex = Graph.GetFirstMatchingVertex(v => v.Value == 1);
-            BreadthFirstSearch.Search(Graph, startingVertex, v => traversalOrder.Add(v.Value));
+            BreadthFirstSearch.Traverse(Graph, startingVertex, v => traversalOrder.Add(v.Value));
 
             Assert.AreEqual(8, traversalOrder.Count);
             CollectionAssert.AreEqual(new List<int> { 1, 4, 8, 14, 7, 2, 12, 11 }, traversalOrder);
@@ -46,7 +46,7 @@ namespace Graft.Algorithms.Test
         {
             List<int> traversalOrder = new List<int>();
 
-            DepthFirstSearch.Search(Graph, v => traversalOrder.Add(v.Value));
+            DepthFirstSearch.Traverse(Graph, v => traversalOrder.Add(v.Value));
 
             Assert.AreEqual(7, traversalOrder.Count);
             CollectionAssert.AreEqual(new List<int> { 0, 6, 3, 5, 10, 9, 13 }, traversalOrder);
@@ -58,7 +58,7 @@ namespace Graft.Algorithms.Test
             List<int> traversalOrder = new List<int>();
 
             IVertex<int> startingVertex = Graph.GetFirstMatchingVertex(v => v.Value == 1);
-            DepthFirstSearch.Search(Graph, startingVertex, v => traversalOrder.Add(v.Value));
+            DepthFirstSearch.Traverse(Graph, startingVertex, v => traversalOrder.Add(v.Value));
 
             Assert.AreEqual(8, traversalOrder.Count);
             CollectionAssert.AreEqual(new List<int> { 1, 4, 7, 2, 11, 12, 8, 14 }, traversalOrder);

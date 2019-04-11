@@ -4,19 +4,25 @@ using System.Collections.Generic;
 
 namespace Graft.Default
 {
-    public class Edge<TV, TW> : IEdge<TV, TW>
+    public class Edge<TV, TW> : IWeightedEdge<TV, TW>
     {
+        private Dictionary<string, object> Attributes { get; }
+
+        public bool IsDirected { get; }
+
+        public IVertex<TV> OriginVertex { get; }
+
         public IVertex<TV> TargetVertex { get; }
 
         public TW Weight { get; }
 
-        private Dictionary<string, object> Attributes { get; }
-
-        public Edge(Vertex<TV> vertex, TW weight = default(TW))
+        public Edge(Vertex<TV> originVertex, Vertex<TV> targetVertex, bool directed = false, TW weight = default(TW))
         {
-            TargetVertex = vertex;
-            Weight = weight;
             Attributes = new Dictionary<string, object>();
+            IsDirected = directed;
+            OriginVertex = originVertex;
+            TargetVertex = targetVertex;
+            Weight = weight;
         }
 
         #region Attributes

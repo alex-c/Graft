@@ -1,11 +1,12 @@
 ﻿using Graft.Default.File;
+using System;
 using System.IO;
 
 namespace Graft.Default
 {
-    public class GraphFactory
+    public class GraphFactory<TV, TW> where TV : IEquatable<TV>
     {
-        public Graph<TV, TW> CreateGraphFromFile<TV, TW>(string filePath, IGraphTextLineParser<TV, TW> parser, bool directed = false)
+        public Graph<TV, TW> CreateGraphFromFile(string filePath, IGraphTextLineParser<TV, TW> parser, bool directed = false)
         {
             FileInfo file = new FileInfo(filePath);
             if (file.Exists)
