@@ -1,11 +1,13 @@
-﻿namespace Graft.Primitives
+﻿using System.Collections.Generic;
+
+namespace Graft.Primitives
 {
     public interface IEdge<TV> : IPrimitive
     {
-        bool IsDirected { get; }
+        ISet<IVertex<TV>> Verteces { get; }
 
-        IVertex<TV> OriginVertex { get; }
+        IVertex<TV> ConnectedVertex(IVertex<TV> vertex);
 
-        IVertex<TV> TargetVertex { get; }
+        IVertex<TV> ConnectedVertex(TV vertexValue);
     }
 }

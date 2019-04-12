@@ -23,7 +23,7 @@ namespace Graft.Tests
         {
             Vertex<int> originVertex = new Vertex<int>(5);
             Vertex<int> targetVertex = new Vertex<int>(7);
-            Edge<int, double> weightedEdge = new Edge<int, double>(originVertex, targetVertex, false, 3.16);
+            Edge<int, double> weightedEdge = new Edge<int, double>(originVertex, targetVertex, 3.16);
 
             Assert.AreEqual(originVertex, weightedEdge.OriginVertex);
             Assert.AreEqual(targetVertex, weightedEdge.TargetVertex);

@@ -4,11 +4,11 @@ using System.Collections.Generic;
 
 namespace Graft.Default
 {
-    public class Edge<TV, TW> : IWeightedEdge<TV, TW>
+    public class Edge<TV, TW> : IWeightedDirectedEdge<TV, TW>
     {
         private Dictionary<string, object> Attributes { get; }
 
-        public bool IsDirected { get; }
+        public ISet<IVertex<TV>> Verteces { get; }
 
         public IVertex<TV> OriginVertex { get; }
 
@@ -16,13 +16,45 @@ namespace Graft.Default
 
         public TW Weight { get; }
 
-        public Edge(Vertex<TV> originVertex, Vertex<TV> targetVertex, bool directed = false, TW weight = default(TW))
+        public Edge(Vertex<TV> originVertex, Vertex<TV> targetVertex, TW weight = default(TW))
         {
             Attributes = new Dictionary<string, object>();
-            IsDirected = directed;
+            Verteces = new HashSet<IVertex<TV>>() { originVertex, targetVertex };
             OriginVertex = originVertex;
             TargetVertex = targetVertex;
             Weight = weight;
+        }
+
+        public IVertex<TV> ConnectedVertex(IVertex<TV> vertex)
+        {
+            if (OriginVertex == vertex)
+            {
+                return TargetVertex;
+            }
+            else if (TargetVertex == vertex)
+            {
+                return OriginVertex;
+            }
+            else
+            {
+                throw new NotImplementedException(); // TODO
+            }
+        }
+
+        public IVertex<TV> ConnectedVertex(TV vertexValue)
+        {
+            if (OriginVertex.Value.Equals(vertexValue))
+            {
+                return TargetVertex;
+            }
+            else if (TargetVertex.Value.Equals(vertexValue))
+            {
+                return OriginVertex;
+            }
+            else
+            {
+                throw new NotImplementedException(); // TODO
+            }
         }
 
         #region Attributes
