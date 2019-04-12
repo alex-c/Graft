@@ -50,7 +50,7 @@ namespace Graft.Default
                 Edges[startingVertexValue].Add(new Edge<TV, TW>(Verteces[startingVertexValue], Verteces[targetVertexValue], Directed, weight));
                 if (!Directed)
                 {
-                    Edges[targetVertexValue].Add(new Edge<TV, TW>(Verteces[startingVertexValue], Verteces[startingVertexValue], Directed, weight));
+                    Edges[targetVertexValue].Add(new Edge<TV, TW>(Verteces[targetVertexValue], Verteces[startingVertexValue], Directed, weight));
                 }
             }
             else
