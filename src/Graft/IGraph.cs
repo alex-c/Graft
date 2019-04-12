@@ -30,7 +30,7 @@ namespace Graft
 
         #region Edge access
 
-        IEnumerable<IEdge<T>> GetEdges();
+        IEnumerable<IEdge<T>> GetAllEdges();
 
         IEdge<T> GetEdgesOfVertex(IVertex<T> vertex);
 

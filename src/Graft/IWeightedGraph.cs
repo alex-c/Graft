@@ -6,7 +6,7 @@ namespace Graft
 {
     public interface IWeightedGraph<TV, TW> : IGraph<TV> where TV : IEquatable<TV>
     {
-        new IEnumerable<IWeightedEdge<TV, TW>> GetEdges();
+        new IEnumerable<IWeightedEdge<TV, TW>> GetAllEdges();
 
         new IWeightedEdge<TV, TW> GetEdgesOfVertex(IVertex<TV> vertex);
     }

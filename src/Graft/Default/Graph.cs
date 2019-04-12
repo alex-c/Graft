@@ -75,7 +75,7 @@ namespace Graft.Default
 
         #region Edge access
 
-        public IEnumerable<IWeightedEdge<TV, TW>> GetEdges()
+        public IEnumerable<IWeightedEdge<TV, TW>> GetAllEdges()
         {
             HashSet<IWeightedEdge<TV, TW>> allEdges = new HashSet<IWeightedEdge<TV, TW>>();
             foreach (HashSet<Edge<TV, TW>> edgeList in Adjacency.Values)
@@ -85,9 +85,9 @@ namespace Graft.Default
             return allEdges;
         }
 
-        IEnumerable<IEdge<TV>> IGraph<TV>.GetEdges()
+        IEnumerable<IEdge<TV>> IGraph<TV>.GetAllEdges()
         {
-            return GetEdges();
+            return GetAllEdges();
         }
 
         public IWeightedEdge<TV, TW> GetEdgesOfVertex(IVertex<TV> vertex)
