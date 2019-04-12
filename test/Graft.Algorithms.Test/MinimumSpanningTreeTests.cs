@@ -28,12 +28,20 @@ namespace Graft.Algorithms.Tests
 
             double mspWeight = msp.GetAllEdges().Sum(e => e.Weight);
 
-            Assert.AreEqual(286.711, mspWeight);
+            AssertDoublesNearlyEqual(286.711, mspWeight, 0.001);
         }
 
         private IWeightedGraph<int, double> ReadGraphFromFile(string filePath)
         {
             return Factory.CreateGraphFromFile(filePath, Parser, false);
+        }
+
+        private void AssertDoublesNearlyEqual(double expected, double actual, double precision)
+        {
+            if (actual < expected - precision || actual > expected + precision)
+            {
+                throw new AssertFailedException($"Doubles are not equal with a precision of {precision}. Expected {expected}, got {actual}.");
+            }
         }
     }
 }
