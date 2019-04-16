@@ -64,7 +64,7 @@ namespace Graft.Algorithms.Tests
 
             double mspWeight = msp.GetAllEdges().Sum(e => e.Weight);
 
-            AssertDoublesNearlyEqual(2775.44, mspWeight, 0.001);
+            AssertDoublesNearlyEqual(2775.44, mspWeight, 0.01);
         }
 
         [TestMethod]
