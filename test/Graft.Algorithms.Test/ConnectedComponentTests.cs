@@ -2,7 +2,7 @@
 using Graft.Default.File;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
-namespace Graft.Algorithms.Test
+namespace Graft.Algorithms.Tests
 {
     [TestClass]
     public class ConnectedComponentTests

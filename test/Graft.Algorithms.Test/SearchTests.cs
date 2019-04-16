@@ -5,7 +5,7 @@ using Graft.Primitives;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System.Collections.Generic;
 
-namespace Graft.Algorithms.Test
+namespace Graft.Algorithms.Tests
 {
     [TestClass]
     public class SearchTests
