@@ -33,10 +33,23 @@ namespace Graft.Algorithms.MinimumSpanningTree
 
                 // Check whether the verteces connected by this edge are already connected in the target graph
                 tempGraph = builder.Build();
-                if (BreadthFirstSearch.Search(tempGraph, nextEdge.OriginVertex, v => v.Value.Equals(nextEdge.TargetVertex.Value)) == null)
+                if (nextEdge is IWeightedDirectedEdge<TV, TW> directedEdge)
                 {
-                    // Verteces are not connected yet, add edge to target graph
-                    builder.AddEdge(nextEdge.OriginVertex.Value, nextEdge.TargetVertex.Value, nextEdge.Weight);
+                    if (BreadthFirstSearch.Search(tempGraph, directedEdge.OriginVertex, v => v.Value.Equals(directedEdge.TargetVertex.Value)) == null)
+                    {
+                        // Verteces are not connected yet, add edge to target graph
+                        builder.AddEdge(directedEdge.OriginVertex.Value, directedEdge.TargetVertex.Value, directedEdge.Weight);
+                    }
+                }
+                else
+                {
+                    IVertex<TV> originVertex = nextEdge.Verteces.First();
+                    IVertex<TV> targetVertex = nextEdge.ConnectedVertex(originVertex);
+                    if (BreadthFirstSearch.Search(tempGraph, originVertex, v => v.Value.Equals(targetVertex.Value)) == null)
+                    {
+                        // Verteces are not connected yet, add edge to target graph
+                        builder.AddEdge(originVertex.Value, targetVertex.Value, nextEdge.Weight);
+                    }
                 }
             }
 

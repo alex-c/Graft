@@ -53,7 +53,16 @@ namespace Graft.Default
             if (ContainsVertex(vertexValue))
             {
                 Adjacency.TryGetValue(vertexValue, out HashSet<Edge<TV, TW>> edges);
-                return edges.Select(e => e.TargetVertex);
+                IEnumerable<IVertex<TV>> targetVerteces = null;
+                if (IsDirected)
+                {
+                    targetVerteces = edges.Select(e => e.TargetVertex);
+                }
+                else
+                {
+                    targetVerteces = edges.Select(e => e.ConnectedVertex(vertexValue));
+                }
+                return targetVerteces;
             }
             else
             {
@@ -77,7 +86,7 @@ namespace Graft.Default
 
         public IEnumerable<IWeightedEdge<TV, TW>> GetAllEdges()
         {
-            HashSet<IWeightedEdge<TV, TW>> allEdges = new HashSet<IWeightedEdge<TV, TW>>();
+            HashSet<IWeightedDirectedEdge<TV, TW>> allEdges = new HashSet<IWeightedDirectedEdge<TV, TW>>();
             foreach (HashSet<Edge<TV, TW>> edgeList in Adjacency.Values)
             {
                 allEdges.UnionWith(edgeList);

@@ -34,9 +34,9 @@ namespace Graft.Default
             return this;
         }
 
-        public GraphBuilder<TV, TW> AddVerteces(int numberOfVertexesToAdd, Func<int, TV> vertexValueProvider)
+        public GraphBuilder<TV, TW> AddVerteces(int numberOfVertecesToAdd, Func<int, TV> vertexValueProvider)
         {
-            for (int i = 0; i < numberOfVertexesToAdd; i++)
+            for (int i = 0; i < numberOfVertecesToAdd; i++)
             {
                 AddVertex(vertexValueProvider(i));
             }
@@ -47,10 +47,11 @@ namespace Graft.Default
         {
             if (Verteces.ContainsKey(startingVertexValue) && Verteces.ContainsKey(targetVertexValue))
             {
-                Edges[startingVertexValue].Add(new Edge<TV, TW>(Verteces[startingVertexValue], Verteces[targetVertexValue], Directed, weight));
+                Edge<TV, TW> newEdge = new Edge<TV, TW>(Verteces[startingVertexValue], Verteces[targetVertexValue], weight);
+                Edges[startingVertexValue].Add(newEdge);
                 if (!Directed)
                 {
-                    Edges[targetVertexValue].Add(new Edge<TV, TW>(Verteces[targetVertexValue], Verteces[startingVertexValue], Directed, weight));
+                    Edges[targetVertexValue].Add(newEdge);
                 }
             }
             else
