@@ -31,6 +31,66 @@ namespace Graft.Algorithms.Tests
             AssertDoublesNearlyEqual(286.711, mspWeight, 0.001);
         }
 
+        [TestMethod]
+        public void TestSmallGraph()
+        {
+            IWeightedGraph<int, double> graph = ReadGraphFromFile("./graphs/weighted/G_1_20.txt");
+
+            IWeightedGraph<int, double> msp = Kruskal.FindMinimumSpanningTree(graph);
+
+            double mspWeight = msp.GetAllEdges().Sum(e => e.Weight);
+
+            AssertDoublesNearlyEqual(29.5493, mspWeight, 0.0001);
+        }
+
+        [TestMethod]
+        public void TestMediumGraph()
+        {
+            IWeightedGraph<int, double> graph = ReadGraphFromFile("./graphs/weighted/G_1_200.txt");
+
+            IWeightedGraph<int, double> msp = Kruskal.FindMinimumSpanningTree(graph);
+
+            double mspWeight = msp.GetAllEdges().Sum(e => e.Weight);
+
+            AssertDoublesNearlyEqual(3.0228, mspWeight, 0.0001);
+        }
+
+        [TestMethod]
+        public void TestBigGraph()
+        {
+            IWeightedGraph<int, double> graph = ReadGraphFromFile("./graphs/weighted/G_10_20.txt");
+
+            IWeightedGraph<int, double> msp = Kruskal.FindMinimumSpanningTree(graph);
+
+            double mspWeight = msp.GetAllEdges().Sum(e => e.Weight);
+
+            AssertDoublesNearlyEqual(2775.44, mspWeight, 0.001);
+        }
+
+        [TestMethod]
+        public void TestVeryBigGraph()
+        {
+            IWeightedGraph<int, double> graph = ReadGraphFromFile("./graphs/weighted/G_10_200.txt");
+
+            IWeightedGraph<int, double> msp = Kruskal.FindMinimumSpanningTree(graph);
+
+            double mspWeight = msp.GetAllEdges().Sum(e => e.Weight);
+
+            AssertDoublesNearlyEqual(301.552, mspWeight, 0.001);
+        }
+
+        [TestMethod]
+        public void TestVeryHugeGraph()
+        {
+            IWeightedGraph<int, double> graph = ReadGraphFromFile("./graphs/weighted/G_100_200.txt");
+
+            IWeightedGraph<int, double> msp = Kruskal.FindMinimumSpanningTree(graph);
+
+            double mspWeight = msp.GetAllEdges().Sum(e => e.Weight);
+
+            AssertDoublesNearlyEqual(27450.6, mspWeight, 0.01);
+        }
+
         private IWeightedGraph<int, double> ReadGraphFromFile(string filePath)
         {
             return Factory.CreateGraphFromFile(filePath, Parser, false);
