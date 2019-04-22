@@ -80,7 +80,7 @@ namespace Graft.Algorithms.Tests
         }
 
         [TestMethod]
-        public void TestVeryHugeGraph()
+        public void TestHugeGraph()
         {
             IWeightedGraph<int, double> graph = ReadGraphFromFile("./graphs/weighted/G_100_200.txt");
 
