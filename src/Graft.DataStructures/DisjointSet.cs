@@ -42,6 +42,7 @@ namespace Graft.DataStructures
 
         /// <summary>
         /// Finds the representative element for the subset in which the passed element is contained.
+        /// This method implicitely performs path compression.
         /// </summary>
         /// <param name="element">Element for which to find the representative subset element.</param>
         /// <returns>Returns the representative subset element.</returns>
@@ -63,13 +64,25 @@ namespace Graft.DataStructures
 
             if (!node1.Value.Equals(node2.Value))
             {
-                node2.Parent = node1;
+                // New set hierarchy is determined on rank
+                if (node1.Rank < node2.Rank)
+                {
+                    node1.Parent = node2;
+                }
+                else
+                {
+                    node2.Parent = node1;
+                    if (node1.Rank == node2.Rank)
+                    {
+                        node1.Rank += 1;
+                    }
+                }
             }
         }
-        
+
         /// <summary>
         /// Finds the root node of the subset in which the passed element is contained. That root node
-        /// represents that subset.
+        /// represents that subset. This method implicitely performs path compression.
         /// </summary>
         /// <param name="element">The elemenet for which to find the subset root node.</param>
         /// <returns></returns>
@@ -108,6 +121,11 @@ namespace Graft.DataStructures
         public DisjointSetNode<T> Parent { get; set; }
 
         /// <summary>
+        /// A rank value which indicates 
+        /// </summary>
+        public int Rank { get; set; }
+
+        /// <summary>
         /// Creates a new and parentless set node.
         /// </summary>
         /// <param name="value">Value of the node.</param>
@@ -115,6 +133,7 @@ namespace Graft.DataStructures
         {
             Value = value;
             Parent = this;
+            Rank = 0;
         }
 
         /// <summary>
