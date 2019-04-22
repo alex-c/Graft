@@ -43,21 +43,21 @@ namespace Graft.Labs.MinimumSpanningTree
                     Graphs.Add(file, ReadGraphFromFile(file));
                 }
             }
-            Console.WriteLine("Done loading graphs from file.");
+            Console.WriteLine("Done loading graphs from file.\n");
 
-            Console.WriteLine("Run connected components tests...");
+            Console.WriteLine("Run minimum spanning tree tests...");
             foreach (KeyValuePair<string, IWeightedGraph<int, double>> graph in Graphs)
             {
                 RunTest(graph.Key, graph.Value);
             }
-            Console.WriteLine("Done running connected components tests.");
+            Console.WriteLine("Done running minimum spanning tree tests.");
         }
 
         private void RunTest(string file, IWeightedGraph<int, double> graph)
         {
             Stopwatch sw = new Stopwatch();
             sw.Start();
-            Algorithms.MinimumSpanningTree.KruskalNaive.FindMinimumSpanningTree(graph);
+            Algorithms.MinimumSpanningTree.Kruskal.FindMinimumSpanningTree(graph);
             sw.Stop();
 
             Console.WriteLine($" + Computed minimum spanning tree of '{file}' using Kruskal's algorithm in {sw.Elapsed}.");

@@ -4,6 +4,7 @@ using System.Linq;
 using System.Collections.Generic;
 using Graft.Algorithms.Search;
 using System;
+using Graft.DataStructures;
 
 namespace Graft.Algorithms.MinimumSpanningTree
 {
@@ -15,41 +16,45 @@ namespace Graft.Algorithms.MinimumSpanningTree
             GraphBuilder<TV, TW> builder = new GraphBuilder<TV, TW>();
 
             // Get all verteces and edges of graph
-            IEnumerable<IVertex<TV>> verteces = graph.GetAllVerteces();
+            IEnumerable<TV> vertexValues = graph.GetAllVerteces().Select(v => v.Value);
             IEnumerable<IWeightedEdge<TV, TW>> edges = graph.GetAllEdges();
 
+            // Initialize disjoint set
+            DisjointSet<TV> disjointSet = new DisjointSet<TV>(vertexValues);
+
             // Add original forest of verteces
-            builder.AddVerteces(verteces.Select(v => v.Value));
+            builder.AddVerteces(vertexValues);
 
             // Sorted collection of edges
-            Queue<IWeightedEdge<TV, TW>> sortedEdges = new Queue<IWeightedEdge<TV, TW>>(edges.OrderBy(e => e.Weight));
+            IOrderedEnumerable<IWeightedEdge<TV, TW>> sortedEdges = edges.OrderBy(e => e.Weight);
 
             // Apply Krsukal
-            IWeightedGraph<TV, TW> tempGraph = null;
-            while (sortedEdges.Any())
+            foreach (IWeightedEdge<TV, TW> edge in sortedEdges)
             {
-                // Get most cost-efficient remaining edge
-                IWeightedEdge<TV, TW> nextEdge = sortedEdges.Dequeue();
 
-                // Check whether the verteces connected by this edge are already connected in the target graph
-                tempGraph = builder.Build();
-                if (nextEdge is IWeightedDirectedEdge<TV, TW> directedEdge)
+                // Select origin and target verteces
+                IVertex<TV> originVertex = null;
+                IVertex<TV> targetVertex = null;
+                if (edge is IWeightedDirectedEdge<TV, TW> directedEdge)
                 {
-                    if (BreadthFirstSearch.Search(tempGraph, directedEdge.OriginVertex, v => v.Value.Equals(directedEdge.TargetVertex.Value)) == null)
-                    {
-                        // Verteces are not connected yet, add edge to target graph
-                        builder.AddEdge(directedEdge.OriginVertex.Value, directedEdge.TargetVertex.Value, directedEdge.Weight);
-                    }
+                    originVertex = directedEdge.OriginVertex;
+                    targetVertex = directedEdge.TargetVertex;
                 }
                 else
                 {
-                    IVertex<TV> originVertex = nextEdge.Verteces.First();
-                    IVertex<TV> targetVertex = nextEdge.ConnectedVertex(originVertex);
-                    if (BreadthFirstSearch.Search(tempGraph, originVertex, v => v.Value.Equals(targetVertex.Value)) == null)
-                    {
-                        // Verteces are not connected yet, add edge to target graph
-                        builder.AddEdge(originVertex.Value, targetVertex.Value, nextEdge.Weight);
-                    }
+                    originVertex = edge.Verteces.First();
+                    targetVertex = edge.ConnectedVertex(originVertex);
+                }
+
+                // Find sets of origin and target verteces
+                TV originSet = disjointSet.FindSet(originVertex.Value);
+                TV targetSet = disjointSet.FindSet(targetVertex.Value);
+
+                // If the sets are disjoint, perform a union operation and add the edge to the target graph!
+                if (!originSet.Equals(targetSet))
+                {
+                    disjointSet.Union(originSet, targetSet);
+                    builder.AddEdge(originVertex.Value, targetVertex.Value, edge.Weight);
                 }
             }
 
