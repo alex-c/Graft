@@ -49,7 +49,7 @@ namespace Graft.Algorithms.MinimumSpanningTree
                 }
             }
 
-            // No verteces left to check, build and return target graph
+            // No edges left to check, build and return target graph
             return builder.Build();
         }
     }

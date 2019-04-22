@@ -1,10 +1,9 @@
-﻿using Graft.Default;
+﻿using Graft.DataStructures;
+using Graft.Default;
 using Graft.Primitives;
-using System.Linq;
-using System.Collections.Generic;
-using Graft.Algorithms.Search;
 using System;
-using Graft.DataStructures;
+using System.Collections.Generic;
+using System.Linq;
 
 namespace Graft.Algorithms.MinimumSpanningTree
 {
@@ -58,7 +57,7 @@ namespace Graft.Algorithms.MinimumSpanningTree
                 }
             }
 
-            // No verteces left to check, build and return target graph
+            // No edges left to check, build and return target graph
             return builder.Build();
         }
     }
