@@ -3,8 +3,9 @@ using Graft.Default.File;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Text;
 
-namespace Graft.Labs.ConnectedComponents
+namespace Graft.Labs.MinimumSpanningTree
 {
     public class TestRunner
     {
@@ -16,14 +17,14 @@ namespace Graft.Labs.ConnectedComponents
 
         private HashSet<string> Files { get; }
 
-        private Dictionary<string, IGraph<int>> Graphs { get; }
+        private Dictionary<string, IWeightedGraph<int, double>> Graphs { get; }
 
         public TestRunner()
         {
             Factory = new GraphFactory<int, double>();
             Parser = new DefaultGraphTextLineParser();
             Files = new HashSet<string>();
-            Graphs = new Dictionary<string, IGraph<int>>();
+            Graphs = new Dictionary<string, IWeightedGraph<int, double>>();
         }
 
         public void AddFile(string file)
@@ -42,27 +43,27 @@ namespace Graft.Labs.ConnectedComponents
                     Graphs.Add(file, ReadGraphFromFile(file));
                 }
             }
-            Console.WriteLine("Done loading graphs from file.");
+            Console.WriteLine("Done loading graphs from file.\n");
 
-            Console.WriteLine("Run connected components tests...");
-            foreach (KeyValuePair<string, IGraph<int>> graph in Graphs)
+            Console.WriteLine("Run minimum spanning tree tests...");
+            foreach (KeyValuePair<string, IWeightedGraph<int, double>> graph in Graphs)
             {
                 RunTest(graph.Key, graph.Value);
             }
-            Console.WriteLine("Done running connected components tests.");
+            Console.WriteLine("Done running minimum spanning tree tests.");
         }
 
-        private void RunTest(string file, IGraph<int> graph)
+        private void RunTest(string file, IWeightedGraph<int, double> graph)
         {
             Stopwatch sw = new Stopwatch();
             sw.Start();
-            int cc = Algorithms.ConnectedComponents.Count(graph);
+            Algorithms.MinimumSpanningTree.Kruskal.FindMinimumSpanningTree(graph);
             sw.Stop();
 
-            Console.WriteLine($" + Counted {cc} connected components of '{file}' in {sw.Elapsed}.");
+            Console.WriteLine($" + Computed minimum spanning tree of '{file}' using Kruskal's algorithm in {sw.Elapsed}.");
         }
 
-        private IGraph<int> ReadGraphFromFile(string fileName)
+        private IWeightedGraph<int, double> ReadGraphFromFile(string fileName)
         {
             return Factory.CreateGraphFromFile($"./graphs/{fileName}", Parser, false);
         }

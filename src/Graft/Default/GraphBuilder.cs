@@ -3,25 +3,25 @@ using System.Collections.Generic;
 
 namespace Graft.Default
 {
-    public class GraphBuilder<TV, TW>
+    public class GraphBuilder<TV, TW> where TV : IEquatable<TV>
     {
         private bool Directed { get; }
 
         private Dictionary<TV, Vertex<TV>> Verteces { get; }
 
-        private Dictionary<TV, List<Edge<TV, TW>>> Edges { get; }
+        private Dictionary<TV, HashSet<Edge<TV, TW>>> Edges { get; }
 
         public GraphBuilder(bool directed = false)
         {
             Directed = directed;
             Verteces = new Dictionary<TV, Vertex<TV>>();
-            Edges = new Dictionary<TV, List<Edge<TV, TW>>>();
+            Edges = new Dictionary<TV, HashSet<Edge<TV, TW>>>();
         }
 
         public GraphBuilder<TV, TW> AddVertex(TV vertexValue)
         {
             Verteces[vertexValue] = new Vertex<TV>(vertexValue);
-            Edges[vertexValue] = new List<Edge<TV, TW>>();
+            Edges[vertexValue] = new HashSet<Edge<TV, TW>>();
             return this;
         }
 
@@ -34,9 +34,9 @@ namespace Graft.Default
             return this;
         }
 
-        public GraphBuilder<TV, TW> AddVerteces(int numberOfVertexesToAdd, Func<int, TV> vertexValueProvider)
+        public GraphBuilder<TV, TW> AddVerteces(int numberOfVertecesToAdd, Func<int, TV> vertexValueProvider)
         {
-            for (int i = 0; i < numberOfVertexesToAdd; i++)
+            for (int i = 0; i < numberOfVertecesToAdd; i++)
             {
                 AddVertex(vertexValueProvider(i));
             }
@@ -47,10 +47,11 @@ namespace Graft.Default
         {
             if (Verteces.ContainsKey(startingVertexValue) && Verteces.ContainsKey(targetVertexValue))
             {
-                Edges[startingVertexValue].Add(new Edge<TV, TW>(Verteces[targetVertexValue], weight));
+                Edge<TV, TW> newEdge = new Edge<TV, TW>(Verteces[startingVertexValue], Verteces[targetVertexValue], weight);
+                Edges[startingVertexValue].Add(newEdge);
                 if (!Directed)
                 {
-                    Edges[targetVertexValue].Add(new Edge<TV, TW>(Verteces[startingVertexValue], weight));
+                    Edges[targetVertexValue].Add(newEdge);
                 }
             }
             else
@@ -62,7 +63,7 @@ namespace Graft.Default
 
         public Graph<TV, TW> Build()
         {
-            return new Graph<TV, TW>(new List<Vertex<TV>>(Verteces.Values), Edges);
+            return new Graph<TV, TW>(new HashSet<Vertex<TV>>(Verteces.Values), Edges);
         }
     }
 }

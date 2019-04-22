@@ -1,4 +1,6 @@
-﻿namespace Graft.Default.File
+﻿using System.Globalization;
+
+namespace Graft.Default.File
 {
     public class DefaultGraphTextLineParser : IGraphTextLineParser<int, double>
     {
@@ -31,7 +33,7 @@
                 case 3:
                     if (int.TryParse(components[0], out int weightedStartingVertexValue) &&
                         int.TryParse(components[1], out int weightedTargetVertexValue) &&
-                        double.TryParse(components[2], out double weight))
+                        double.TryParse(components[2], NumberStyles.Float, CultureInfo.InvariantCulture, out double weight))
                     {
                         builder.AddEdge(weightedStartingVertexValue, weightedTargetVertexValue, weight);
                     }

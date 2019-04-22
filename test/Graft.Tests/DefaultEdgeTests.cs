@@ -9,9 +9,11 @@ namespace Graft.Tests
         [TestMethod]
         public void EdgeDefaultInitialization()
         {
+            Vertex<int> originVertex = new Vertex<int>(5);
             Vertex<int> targetVertex = new Vertex<int>(7);
-            Edge<int, double> defaultEdge = new Edge<int, double>(targetVertex);
-            
+            Edge<int, double> defaultEdge = new Edge<int, double>(originVertex, targetVertex);
+
+            Assert.AreEqual(originVertex, defaultEdge.OriginVertex);
             Assert.AreEqual(targetVertex, defaultEdge.TargetVertex);
             Assert.AreEqual(0.0, defaultEdge.Weight);
         }
@@ -19,9 +21,11 @@ namespace Graft.Tests
         [TestMethod]
         public void EdgeWeighterInitialization()
         {
+            Vertex<int> originVertex = new Vertex<int>(5);
             Vertex<int> targetVertex = new Vertex<int>(7);
-            Edge<int, double> weightedEdge = new Edge<int, double>(targetVertex, 3.16);
+            Edge<int, double> weightedEdge = new Edge<int, double>(originVertex, targetVertex, 3.16);
 
+            Assert.AreEqual(originVertex, weightedEdge.OriginVertex);
             Assert.AreEqual(targetVertex, weightedEdge.TargetVertex);
             Assert.AreEqual(3.16, weightedEdge.Weight);
         }
@@ -29,8 +33,9 @@ namespace Graft.Tests
         [TestMethod]
         public void EdgeAttributeTests()
         {
+            Vertex<int> originVertex = new Vertex<int>(5);
             Vertex<int> targetVertex = new Vertex<int>(7);
-            Edge<int, double> edge = new Edge<int, double>(targetVertex);
+            Edge<int, double> edge = new Edge<int, double>(originVertex, targetVertex);
 
             Assert.AreEqual(false, edge.HasAttribute("test"));
 

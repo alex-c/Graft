@@ -2,18 +2,18 @@
 using Graft.Default.File;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
-namespace Graft.Algorithms.Test
+namespace Graft.Algorithms.Tests
 {
     [TestClass]
     public class ConnectedComponentTests
     {
-        private GraphFactory Factory { get; }
+        private GraphFactory<int, double> Factory { get; }
 
         private DefaultGraphTextLineParser Parser { get; }
 
         public ConnectedComponentTests()
         {
-            Factory = new GraphFactory();
+            Factory = new GraphFactory<int, double>();
             Parser = new DefaultGraphTextLineParser();
         }
 

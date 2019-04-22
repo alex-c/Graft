@@ -5,6 +5,7 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\Graft.DataStructures\Graft.DataStructures.csproj" />
     <ProjectReference Include="..\Graft\Graft.csproj" />
   </ItemGroup>
 

@@ -1,16 +1,17 @@
-﻿using Graft.DataStructures;
-using Graft.Default;
+﻿using Graft.Default;
 using Graft.Primitives;
-using System;
-using System.Collections.Generic;
 using System.Linq;
+using System.Collections.Generic;
+using Graft.Algorithms.Search;
+using System;
 
 namespace Graft.Algorithms.MinimumSpanningTree
 {
     /// <summary>
-    /// A performant implementation of Kruskal's algorithm based on a disjoint set data structure.
+    /// A naive implementation of Kruskal that uses breadth first search on the incrementally built minimum spanning tree
+    /// in order to check whether an edge leads to a not-yet connected vertex or not. This has really bad performance!
     /// </summary>
-    public static class Kruskal
+    public static class KruskalNaive
     {
         /// <summary>
         /// Builds the minimum spanning tree of a given graph.
@@ -25,23 +26,21 @@ namespace Graft.Algorithms.MinimumSpanningTree
             GraphBuilder<TV, TW> builder = new GraphBuilder<TV, TW>();
 
             // Get all verteces and edges of graph
-            IEnumerable<TV> vertexValues = graph.GetAllVerteces().Select(v => v.Value);
+            IEnumerable<IVertex<TV>> verteces = graph.GetAllVerteces();
             IEnumerable<IWeightedEdge<TV, TW>> edges = graph.GetAllEdges();
 
-            // Initialize disjoint set
-            DisjointSet<TV> disjointSet = new DisjointSet<TV>(vertexValues);
-
             // Add original forest of verteces
-            builder.AddVerteces(vertexValues);
+            builder.AddVerteces(verteces.Select(v => v.Value));
 
             // Sorted collection of edges
             IOrderedEnumerable<IWeightedEdge<TV, TW>> sortedEdges = edges.OrderBy(e => e.Weight);
 
             // Apply Krsukal
+            IWeightedGraph<TV, TW> tempGraph = null;
             foreach (IWeightedEdge<TV, TW> edge in sortedEdges)
             {
-
-                // Select origin and target verteces
+                // Check whether the verteces connected by this edge are already connected in the target graph
+                tempGraph = builder.Build();
                 IVertex<TV> originVertex = null;
                 IVertex<TV> targetVertex = null;
                 if (edge is IWeightedDirectedEdge<TV, TW> directedEdge)
@@ -54,15 +53,9 @@ namespace Graft.Algorithms.MinimumSpanningTree
                     originVertex = edge.Verteces.First();
                     targetVertex = edge.ConnectedVertex(originVertex);
                 }
-
-                // Find sets of origin and target verteces
-                TV originSet = disjointSet.FindSet(originVertex.Value);
-                TV targetSet = disjointSet.FindSet(targetVertex.Value);
-
-                // If the sets are disjoint, perform a union operation and add the edge to the target graph!
-                if (!originSet.Equals(targetSet))
+                if (BreadthFirstSearch.Search(tempGraph, originVertex, v => v.Value.Equals(targetVertex.Value)) == null)
                 {
-                    disjointSet.Union(originSet, targetSet);
+                    // Verteces are not connected yet, add edge to target graph
                     builder.AddEdge(originVertex.Value, targetVertex.Value, edge.Weight);
                 }
             }
