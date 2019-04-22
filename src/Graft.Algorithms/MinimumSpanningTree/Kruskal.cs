@@ -7,8 +7,18 @@ using System.Linq;
 
 namespace Graft.Algorithms.MinimumSpanningTree
 {
+    /// <summary>
+    /// A performant implementation of Kruskal's algorithm based on a disjoint set data structure.
+    /// </summary>
     public static class Kruskal
     {
+        /// <summary>
+        /// Builds the minimum spanning tree of a given graph.
+        /// </summary>
+        /// <typeparam name="TV">Type of the graph vertex values.</typeparam>
+        /// <typeparam name="TW">Type of the graph edge weights.</typeparam>
+        /// <param name="graph">The graph got whcih to build the minimum spanning tree.</param>
+        /// <returns>Returns the minimum spanning tree of the given graph.</returns>
         public static IWeightedGraph<TV, TW> FindMinimumSpanningTree<TV, TW>(IWeightedGraph<TV, TW> graph) where TV : IEquatable<TV>
         {
             // Builder used to incrementally build the target minimum spanning tree

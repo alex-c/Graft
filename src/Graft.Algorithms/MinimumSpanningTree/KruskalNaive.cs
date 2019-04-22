@@ -7,8 +7,19 @@ using System;
 
 namespace Graft.Algorithms.MinimumSpanningTree
 {
+    /// <summary>
+    /// A naive implementation of Kruskal that uses breadth first search on the incrementally built minimum spanning tree
+    /// in order to check whether an edge leads to a not-yet connected vertex or not. This has really bad performance!
+    /// </summary>
     public static class KruskalNaive
     {
+        /// <summary>
+        /// Builds the minimum spanning tree of a given graph.
+        /// </summary>
+        /// <typeparam name="TV">Type of the graph vertex values.</typeparam>
+        /// <typeparam name="TW">Type of the graph edge weights.</typeparam>
+        /// <param name="graph">The graph got whcih to build the minimum spanning tree.</param>
+        /// <returns>Returns the minimum spanning tree of the given graph.</returns>
         public static IWeightedGraph<TV, TW> FindMinimumSpanningTree<TV, TW>(IWeightedGraph<TV, TW> graph) where TV : IEquatable<TV>
         {
             // Builder used to incrementally build the target minimum spanning tree
