@@ -77,11 +77,11 @@ namespace Graft.DataStructures
         {
             if (Nodes.TryGetValue(element, out DisjointSetNode<T> node))
             {
-                while (node.HasParent())
+                if (node.HasParent())
                 {
-                    node = node.Parent;
+                    node.Parent = FindSetRootNode(node.Parent.Value);
                 }
-                return node;
+                return node.Parent;
             }
             else
             {
