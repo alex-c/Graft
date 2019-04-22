@@ -57,7 +57,7 @@ namespace Graft.Labs.MinimumSpanningTree
         {
             Stopwatch sw = new Stopwatch();
             sw.Start();
-            Algorithms.MinimumSpanningTree.Kruskal.FindMinimumSpanningTree(graph);
+            Algorithms.MinimumSpanningTree.KruskalNaive.FindMinimumSpanningTree(graph);
             sw.Stop();
 
             Console.WriteLine($" + Computed minimum spanning tree of '{file}' using Kruskal's algorithm in {sw.Elapsed}.");

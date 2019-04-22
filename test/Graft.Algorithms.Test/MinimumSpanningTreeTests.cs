@@ -24,7 +24,7 @@ namespace Graft.Algorithms.Tests
         {
             IWeightedGraph<int, double> graph = ReadGraphFromFile("./graphs/weighted/G_1_2.txt");
 
-            IWeightedGraph<int, double> msp = Kruskal.FindMinimumSpanningTree(graph);
+            IWeightedGraph<int, double> msp = KruskalNaive.FindMinimumSpanningTree(graph);
 
             double mspWeight = msp.GetAllEdges().Sum(e => e.Weight);
 
@@ -36,7 +36,7 @@ namespace Graft.Algorithms.Tests
         {
             IWeightedGraph<int, double> graph = ReadGraphFromFile("./graphs/weighted/G_1_20.txt");
 
-            IWeightedGraph<int, double> msp = Kruskal.FindMinimumSpanningTree(graph);
+            IWeightedGraph<int, double> msp = KruskalNaive.FindMinimumSpanningTree(graph);
 
             double mspWeight = msp.GetAllEdges().Sum(e => e.Weight);
 
@@ -48,7 +48,7 @@ namespace Graft.Algorithms.Tests
         {
             IWeightedGraph<int, double> graph = ReadGraphFromFile("./graphs/weighted/G_1_200.txt");
 
-            IWeightedGraph<int, double> msp = Kruskal.FindMinimumSpanningTree(graph);
+            IWeightedGraph<int, double> msp = KruskalNaive.FindMinimumSpanningTree(graph);
 
             double mspWeight = msp.GetAllEdges().Sum(e => e.Weight);
 
@@ -60,7 +60,7 @@ namespace Graft.Algorithms.Tests
         {
             IWeightedGraph<int, double> graph = ReadGraphFromFile("./graphs/weighted/G_10_20.txt");
 
-            IWeightedGraph<int, double> msp = Kruskal.FindMinimumSpanningTree(graph);
+            IWeightedGraph<int, double> msp = KruskalNaive.FindMinimumSpanningTree(graph);
 
             double mspWeight = msp.GetAllEdges().Sum(e => e.Weight);
 
@@ -72,7 +72,7 @@ namespace Graft.Algorithms.Tests
         {
             IWeightedGraph<int, double> graph = ReadGraphFromFile("./graphs/weighted/G_10_200.txt");
 
-            IWeightedGraph<int, double> msp = Kruskal.FindMinimumSpanningTree(graph);
+            IWeightedGraph<int, double> msp = KruskalNaive.FindMinimumSpanningTree(graph);
 
             double mspWeight = msp.GetAllEdges().Sum(e => e.Weight);
 
@@ -84,7 +84,7 @@ namespace Graft.Algorithms.Tests
         {
             IWeightedGraph<int, double> graph = ReadGraphFromFile("./graphs/weighted/G_100_200.txt");
 
-            IWeightedGraph<int, double> msp = Kruskal.FindMinimumSpanningTree(graph);
+            IWeightedGraph<int, double> msp = KruskalNaive.FindMinimumSpanningTree(graph);
 
             double mspWeight = msp.GetAllEdges().Sum(e => e.Weight);
 
