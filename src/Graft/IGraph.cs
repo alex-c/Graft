@@ -8,6 +8,8 @@ namespace Graft
     {
         bool IsDirected { get; }
 
+        int VertexCount { get; }
+
         #region Vertex access
 
         IVertex<T> GetFirstVertex();

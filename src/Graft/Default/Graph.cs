@@ -13,12 +13,15 @@ namespace Graft.Default
 
         public bool IsDirected { get; }
 
+        public int VertexCount { get; }
+
         public Graph(bool isDirected = false) : this(new HashSet<Vertex<TV>>(), new Dictionary<TV, HashSet<Edge<TV, TW>>>(), isDirected) { }
 
         public Graph(HashSet<Vertex<TV>> verteces, Dictionary<TV, HashSet<Edge<TV, TW>>> adjacency, bool isDirected = false)
         {
             Verteces = verteces;
             Adjacency = adjacency;
+            VertexCount = verteces.Count;
         }
 
         #region Vertex access
