@@ -43,7 +43,7 @@ namespace Graft.Default
             return this;
         }
 
-        public GraphBuilder<TV, TW> AddEdge(TV startingVertexValue, TV targetVertexValue, TW weight = default(TW))
+        public GraphBuilder<TV, TW> AddEdge(TV startingVertexValue, TV targetVertexValue, TW weight = default)
         {
             if (Verteces.ContainsKey(startingVertexValue) && Verteces.ContainsKey(targetVertexValue))
             {
