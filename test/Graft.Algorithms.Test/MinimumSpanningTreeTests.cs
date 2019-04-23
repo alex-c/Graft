@@ -69,20 +69,20 @@ namespace Graft.Algorithms.Tests
 
         private void TestMstAlgorithms(IWeightedGraph<int, double> graph, double expectedMstWeight, double precision)
         {
-            TestMstAlgorithm(graph, expectedMstWeight, precision, ALGORITHMS.KRUSKAL);
-            TestMstAlgorithm(graph, expectedMstWeight, precision, ALGORITHMS.PRIM);
+            TestMstAlgorithm(graph, expectedMstWeight, precision, ALGORITHM.KRUSKAL);
+            TestMstAlgorithm(graph, expectedMstWeight, precision, ALGORITHM.PRIM);
         }
 
-        private void TestMstAlgorithm(IWeightedGraph<int, double> graph, double expectedMstWeight, double precision, ALGORITHMS algorithm)
+        private void TestMstAlgorithm(IWeightedGraph<int, double> graph, double expectedMstWeight, double precision, ALGORITHM algorithm)
         {
             // Build minimum spanning tree with algorithm to test
             IWeightedGraph<int, double> msp;
             switch (algorithm)
             {
-                case ALGORITHMS.KRUSKAL:
+                case ALGORITHM.KRUSKAL:
                     msp = Kruskal.FindMinimumSpanningTree(graph);
                     break;
-                case ALGORITHMS.PRIM:
+                case ALGORITHM.PRIM:
                     msp = Prim.FindMinimumSpanningTree(graph, 0, double.MaxValue);
                     break;
                 default:
@@ -108,7 +108,7 @@ namespace Graft.Algorithms.Tests
         }
     }
 
-    internal enum ALGORITHMS
+    internal enum ALGORITHM
     {
         KRUSKAL,
         PRIM
