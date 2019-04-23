@@ -8,6 +8,6 @@ namespace Graft
     {
         new IEnumerable<IWeightedEdge<TV, TW>> GetAllEdges();
 
-        new IWeightedEdge<TV, TW> GetEdgesOfVertex(IVertex<TV> vertex);
+        new IEnumerable<IWeightedEdge<TV, TW>> GetEdgesOfVertex(IVertex<TV> vertex);
     }
 }

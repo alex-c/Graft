@@ -99,12 +99,12 @@ namespace Graft.Default
             return GetAllEdges();
         }
 
-        public IWeightedEdge<TV, TW> GetEdgesOfVertex(IVertex<TV> vertex)
+        public IEnumerable<IWeightedEdge<TV, TW>> GetEdgesOfVertex(IVertex<TV> vertex)
         {
             throw new NotImplementedException();
         }
 
-        IEdge<TV> IGraph<TV>.GetEdgesOfVertex(IVertex<TV> vertex)
+        IEnumerable<IEdge<TV>> IGraph<TV>.GetEdgesOfVertex(IVertex<TV> vertex)
         {
             return GetEdgesOfVertex(vertex);
         }

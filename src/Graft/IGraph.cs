@@ -32,7 +32,7 @@ namespace Graft
 
         IEnumerable<IEdge<T>> GetAllEdges();
 
-        IEdge<T> GetEdgesOfVertex(IVertex<T> vertex);
+        IEnumerable<IEdge<T>> GetEdgesOfVertex(IVertex<T> vertex);
 
         #endregion
     }
