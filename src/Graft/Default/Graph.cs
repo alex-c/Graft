@@ -101,7 +101,14 @@ namespace Graft.Default
 
         public IEnumerable<IWeightedEdge<TV, TW>> GetEdgesOfVertex(IVertex<TV> vertex)
         {
-            throw new NotImplementedException();
+            if (Adjacency.TryGetValue(vertex.Value, out HashSet<Edge<TV, TW>> edges))
+            {
+                return edges;
+            }
+            else
+            {
+                throw new NotImplementedException(); // TODO
+            }
         }
 
         IEnumerable<IEdge<TV>> IGraph<TV>.GetEdgesOfVertex(IVertex<TV> vertex)
