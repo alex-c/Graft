@@ -1,4 +1,5 @@
-﻿using System.Globalization;
+﻿using System;
+using System.Globalization;
 
 namespace Graft.Default.File
 {
@@ -16,7 +17,7 @@ namespace Graft.Default.File
                     }
                     else
                     {
-                        // TODO
+                        throw new FormatException("Failed parsing text line, expected and integer.");
                     }
                     break;
                 case 2:
@@ -27,7 +28,7 @@ namespace Graft.Default.File
                     }
                     else
                     {
-                        // TODO
+                        throw new FormatException("Failed parsing text line, expected two integers.");
                     }
                     break;
                 case 3:
@@ -39,12 +40,11 @@ namespace Graft.Default.File
                     }
                     else
                     {
-                        // TODO
+                        throw new FormatException("Failed parsing text line, expected two integers and a floating point value.");
                     }
                     break;
                 default:
-                    // TODO
-                    break;
+                    throw new FormatException("Input file does not match the expected format: expected 1, 2 or 3 values on this line.");
             }
         }
     }

@@ -15,9 +15,18 @@ namespace Graft.Default
                 using (StreamReader streamReader = file.OpenText())
                 {
                     string line = null;
+                    int lineNumber = 1;
                     while ((line = streamReader.ReadLine()) != null)
                     {
-                        parser.ParseLine(line, builder);
+                        try
+                        {
+                            parser.ParseLine(line, builder);
+                        }
+                        catch (Exception exception)
+                        {
+                            throw new ParserException($"Error while parsing line {lineNumber} of '{filePath}': {exception.Message}");
+                        }
+                        lineNumber++;
                     }
                 }
                 return builder.Build();
