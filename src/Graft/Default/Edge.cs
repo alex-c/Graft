@@ -16,7 +16,7 @@ namespace Graft.Default
 
         public TW Weight { get; }
 
-        public Edge(Vertex<TV> originVertex, Vertex<TV> targetVertex, TW weight = default(TW))
+        public Edge(Vertex<TV> originVertex, Vertex<TV> targetVertex, TW weight = default)
         {
             Attributes = new Dictionary<string, object>();
             Verteces = new HashSet<IVertex<TV>>() { originVertex, targetVertex };
