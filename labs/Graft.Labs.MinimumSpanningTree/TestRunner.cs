@@ -35,7 +35,8 @@ namespace Graft.Labs.MinimumSpanningTree
             // Set which algorithms should be tested
             AlgorithmsToTest = new HashSet<ALGORITHM>()
             {
-                ALGORITHM.KRUSKAL
+                ALGORITHM.KRUSKAL,
+                ALGORITHM.PRIM
             };
 
             // Configure Serilog
@@ -60,7 +61,7 @@ namespace Graft.Labs.MinimumSpanningTree
 
             // Prepare table printing
             PrettyPrinter printer = new PrettyPrinter(Logger);
-            TableBuilder table = printer.BuildTable(new string[] { "Graph", "Algorithm", "Time" });
+            TableBuilder table = printer.BuildTable(new string[] { "Graph", "Algorithm", "Time" }, "Execution Times");
 
             // Perform tests
             Logger.LogInformation("Run minimum spanning tree tests...");

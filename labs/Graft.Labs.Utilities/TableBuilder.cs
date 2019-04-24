@@ -7,6 +7,8 @@ namespace Graft.Labs.Utilities
 {
     public class TableBuilder
     {
+        private string Title { get; }
+
         private HashSet<string> Header { get; }
 
         private HashSet<HashSet<string>> Lines { get; }
@@ -15,12 +17,13 @@ namespace Graft.Labs.Utilities
 
         private ILogger Logger { get; }
 
-        public TableBuilder(IEnumerable<string> columns, ILogger logger)
+        public TableBuilder(IEnumerable<string> columns, ILogger logger, string title = null)
         {
             Header = new HashSet<string>(columns);
             Lines = new HashSet<HashSet<string>>();
             ColumnWidths = new List<int>(Header.Select(c => c.Length));
             Logger = logger;
+            Title = title;
         }
 
         public TableBuilder AddLine(IEnumerable<string> cellValues)
@@ -39,16 +42,20 @@ namespace Graft.Labs.Utilities
 
         public void Print()
         {
-            // Prepare line separator
+            // Prepare line separators
+            string titleLine = "+";
             string lineSeparator = "+";
             string headerLine = "+";
             foreach (int columnWidth in ColumnWidths)
             {
-                lineSeparator += new string('-', columnWidth + 2);
+                titleLine += new string('-', columnWidth + 2);
+                titleLine += "-";
                 headerLine += new string('=', columnWidth + 2);
-                lineSeparator += "+";
                 headerLine += "+";
+                lineSeparator += new string('-', columnWidth + 2);
+                lineSeparator += "+";
             }
+            titleLine = titleLine.Remove(titleLine.Length - 1, 1) + "+";
 
             // Prepare line template
             string lineTemplate = "| ";
@@ -56,13 +63,20 @@ namespace Graft.Labs.Utilities
             {
                 lineTemplate += "{" + i + "} | ";
             }
+            
+            // Print table title if needed
+            if (Title != null)
+            {
+                Logger.LogInformation(titleLine);
+                Logger.LogInformation(string.Format("| {0} |", Title.PadRight(ColumnWidths.Sum() + ColumnWidths.Count * 2)));
+            }
 
-            // Print header
+            // Print table header
             Logger.LogInformation(lineSeparator);
             Logger.LogInformation(string.Format(lineTemplate, PadCellValues(Header, ColumnWidths)));
             Logger.LogInformation(headerLine);
 
-            // Print lines
+            // Print table lines
             foreach (HashSet<string> line in Lines)
             {
                 Logger.LogInformation(lineTemplate, PadCellValues(line, ColumnWidths));

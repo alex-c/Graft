@@ -12,9 +12,9 @@ namespace Graft.Labs.Utilities
             Logger = logger;
         }
 
-        public TableBuilder BuildTable(IEnumerable<string> columns)
+        public TableBuilder BuildTable(IEnumerable<string> columns, string title = null)
         {
-            return new TableBuilder(columns, Logger);
+            return new TableBuilder(columns, Logger, title);
         }
     }
 }
