@@ -28,7 +28,7 @@ namespace Graft.Default
             }
             else
             {
-                throw new NotImplementedException(); // TODO
+                throw new KeyNotFoundException($"There is no attribute '{attribute}' set on this vertex.");
             }
         }
 

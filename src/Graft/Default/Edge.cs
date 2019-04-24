@@ -37,7 +37,7 @@ namespace Graft.Default
             }
             else
             {
-                throw new NotImplementedException(); // TODO
+                throw new InvalidOperationException("Passed vertex is not an endpoint of this edge.");
             }
         }
 
@@ -53,7 +53,7 @@ namespace Graft.Default
             }
             else
             {
-                throw new NotImplementedException(); // TODO
+                throw new InvalidOperationException("Passed vertex is not an endpoint of this edge.");
             }
         }
 
@@ -69,7 +69,7 @@ namespace Graft.Default
             }
             else
             {
-                throw new NotImplementedException(); // TODO
+                throw new KeyNotFoundException($"There is no attribute '{attribute}' set on this edge.");
             }
         }
 

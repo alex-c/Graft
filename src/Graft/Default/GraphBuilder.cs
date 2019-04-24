@@ -56,7 +56,7 @@ namespace Graft.Default
             }
             else
             {
-                throw new NotImplementedException(); //TODO
+                throw new InvalidOperationException($"One or more of the passed verteces are not verteces of this graph.");
             }
             return this;
         }

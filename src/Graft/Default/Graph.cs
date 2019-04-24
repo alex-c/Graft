@@ -69,7 +69,7 @@ namespace Graft.Default
             }
             else
             {
-                throw new NotImplementedException(); // TODO
+                throw new InvalidOperationException("The passed vertex is not a vertex of this graph.");
             }
         }
 
@@ -110,7 +110,7 @@ namespace Graft.Default
             }
             else
             {
-                throw new NotImplementedException(); // TODO
+                throw new InvalidOperationException("The passed vertex is not a vertex of this graph.");
             }
         }
 
