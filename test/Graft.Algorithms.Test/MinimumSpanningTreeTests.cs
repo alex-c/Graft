@@ -1,8 +1,10 @@
 ﻿using Graft.Algorithms.MinimumSpanningTree;
 using Graft.Default;
 using Graft.Default.File;
+using Graft.Primitives;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System;
+using System.Collections.Generic;
 using System.Linq;
 
 namespace Graft.Algorithms.Tests
@@ -18,6 +20,22 @@ namespace Graft.Algorithms.Tests
         {
             Factory = new GraphFactory<int, double>();
             Parser = new DefaultGraphTextLineParser();
+        }
+
+        [TestMethod]
+        public void TestTrivialGraph()
+        {
+            GraphBuilder<int, double> builder = new GraphBuilder<int, double>();
+            Graph<int, double> graph = builder.AddVerteces(5, n => n)
+                .AddEdge(0, 1, 0.2)
+                .AddEdge(0, 2, 0.1)
+                .AddEdge(0, 3, 0.3)
+                .AddEdge(1, 2, 0.1)
+                .AddEdge(1, 3, 0.2)
+                .AddEdge(1, 4, 1.0)
+                .Build();
+
+            TestMstAlgorithms(graph, 1.4, 0.01);
         }
 
         [TestMethod]
@@ -92,8 +110,13 @@ namespace Graft.Algorithms.Tests
             // Check that all verteces are included
             Assert.AreEqual(graph.VertexCount, msp.VertexCount);
 
-            // Compute total weight
-            double mspWeight = msp.GetAllEdges().Sum(e => e.Weight);
+            // Count edges and compute total weight
+            IEnumerable<IWeightedEdge<int, double>> edges = msp.GetAllEdges();
+            int edgeCount = edges.Count();
+            double mspWeight = edges.Sum(e => e.Weight);
+
+            // Check edge count
+            Assert.AreEqual(graph.VertexCount - 1, edgeCount);
 
             // Check that the total weight is as expected
             AssertDoublesNearlyEqual(expectedMstWeight, mspWeight, precision);
