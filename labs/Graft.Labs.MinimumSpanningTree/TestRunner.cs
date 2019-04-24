@@ -1,9 +1,11 @@
 ﻿using Graft.Default;
 using Graft.Default.File;
+using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
-using System.Text;
+using Serilog;
+using Graft.Labs.Utilities;
 
 namespace Graft.Labs.MinimumSpanningTree
 {
@@ -19,12 +21,31 @@ namespace Graft.Labs.MinimumSpanningTree
 
         private Dictionary<string, IWeightedGraph<int, double>> Graphs { get; }
 
+        private HashSet<ALGORITHM> AlgorithmsToTest { get; }
+
+        private Microsoft.Extensions.Logging.ILogger Logger { get; }
+
         public TestRunner()
         {
             Factory = new GraphFactory<int, double>();
             Parser = new DefaultGraphTextLineParser();
             Files = new HashSet<string>();
             Graphs = new Dictionary<string, IWeightedGraph<int, double>>();
+
+            // Set which algorithms should be tested
+            AlgorithmsToTest = new HashSet<ALGORITHM>()
+            {
+                ALGORITHM.KRUSKAL
+            };
+
+            // Configure Serilog
+            Log.Logger = new LoggerConfiguration()
+                .MinimumLevel.Debug()
+                .WriteTo.Console()
+                .CreateLogger();
+
+            // Set Serilog logger to Microsoft's ILogger
+            Logger = new LoggerFactory().AddSerilog().CreateLogger<TestRunner>();
         }
 
         public void AddFile(string file)
@@ -34,38 +55,51 @@ namespace Graft.Labs.MinimumSpanningTree
 
         public void RunTests()
         {
+            // Read graphs to test from files
             ReadGraphsFromFile();
-            Console.WriteLine("Run minimum spanning tree tests...");
+
+            // Prepare table printing
+            PrettyPrinter printer = new PrettyPrinter(Logger);
+            TableBuilder table = printer.BuildTable(new string[] { "Graph", "Algorithm", "Time" });
+
+            // Perform tests
+            Logger.LogInformation("Run minimum spanning tree tests...");
             foreach (KeyValuePair<string, IWeightedGraph<int, double>> graph in Graphs)
             {
-                RunTest(graph.Key, graph.Value, ALGORITHM.KRUSKAL);
-                RunTest(graph.Key, graph.Value, ALGORITHM.PRIM);
+                foreach (ALGORITHM algorithm in AlgorithmsToTest)
+                {
+                    TimeSpan time = RunTest(graph.Key, graph.Value, algorithm);
+                    table.AddLine(new string[] { graph.Key, algorithm.ToString(), time.ToString() });
+                }
             }
-            Console.WriteLine("Done running minimum spanning tree tests.");
+            Logger.LogInformation("Done running minimum spanning tree tests.\n");
+
+            // Display times as table
+            table.Print();
         }
 
         private void ReadGraphsFromFile()
         {
-            Console.WriteLine("Reading graphs from file...");
+            Logger.LogInformation("Reading graphs from file...");
             foreach (string file in Files)
             {
                 try
                 {
                     if (!Graphs.ContainsKey(file))
                     {
-                        Console.WriteLine($" - loading '{file}'...");
+                        Logger.LogDebug($" - loading '{file}'...");
                         Graphs.Add(file, ReadGraphFromFile(file));
                     }
                 }
                 catch (Exception exception)
                 {
-                    Console.WriteLine($" ! Error while parsing '{file}': {exception.Message}");
+                    Logger.LogWarning($" ! Error while parsing '{file}': {exception.Message}");
                 }
             }
-            Console.WriteLine("Done reading graphs from file.\n");
+            Logger.LogInformation("Done reading graphs from file.\n");
         }
 
-        private void RunTest(string file, IWeightedGraph<int, double> graph, ALGORITHM algorithm)
+        private TimeSpan RunTest(string file, IWeightedGraph<int, double> graph, ALGORITHM algorithm)
         {
             Stopwatch sw = new Stopwatch();
             switch (algorithm)
@@ -82,7 +116,9 @@ namespace Graft.Labs.MinimumSpanningTree
                     break;
             }
 
-            Console.WriteLine($" + Computed minimum spanning tree of '{file}' using {algorithm.ToString()}'s algorithm in {sw.Elapsed}.");
+            Logger.LogDebug($" - Computed MST for '{file}' using {algorithm}'s algorithm in {sw.Elapsed}.");
+
+            return sw.Elapsed;
         }
 
         private IWeightedGraph<int, double> ReadGraphFromFile(string fileName)
