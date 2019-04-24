@@ -38,6 +38,7 @@ namespace Graft.Algorithms.MinimumSpanningTree
             IOrderedEnumerable<IWeightedEdge<TV, TW>> sortedEdges = edges.OrderBy(e => e.Weight);
 
             // Apply Krsukal
+            int numberOfEdgesAdded = 0;
             foreach (IWeightedEdge<TV, TW> edge in sortedEdges)
             {
 
@@ -64,6 +65,12 @@ namespace Graft.Algorithms.MinimumSpanningTree
                 {
                     disjointSet.Union(originSet, targetSet);
                     builder.AddEdge(originVertex.Value, targetVertex.Value, edge.Weight);
+                    
+                    // If the number of added edges equals the number of verteces minus 1, the MST is complete
+                    if (++numberOfEdgesAdded == graph.VertexCount - 1)
+                    {
+                        break;
+                    }
                 }
             }
 
