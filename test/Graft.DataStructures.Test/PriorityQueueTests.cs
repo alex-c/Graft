@@ -15,6 +15,7 @@ namespace Graft.DataStructures.Test
         {
             QueueImplementations = new List<IPriorityQueue<IVertex<int>, double>>();
             QueueImplementations.Add(new NaivePriorityQueue<IVertex<int>, double>());
+            QueueImplementations.Add(new PriorityQueue<IVertex<int>, double>());
         }
 
         [TestMethod]
