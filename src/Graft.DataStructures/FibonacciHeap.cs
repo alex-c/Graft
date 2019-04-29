@@ -4,19 +4,15 @@ using System.Text;
 
 namespace Graft.DataStructures
 {
-    public class FibonacciHeap<T> where T : IComparable
+    public class FibonacciHeap<TE, TP> where TP : IComparable
     {
-        private FibonacciHeapNode<T> Root { get; set; }
+        private FibonacciHeapNode<TE, TP> Root { get; set; }
 
-        public bool Empty
-        {
-            get
-            {
-                return Root == null;
-            }
-        }
+        public bool Empty => Root == null;
+
+        public int Count { get; private set; }
         
-        public T Minimum
+        public TE Minimum
         {
             get
             {
@@ -24,13 +20,18 @@ namespace Graft.DataStructures
                 {
                     throw new InvalidOperationException("Heap is empty.");
                 }
-                return Root.Value;
+                return Root.Element;
             }
         }
 
-        public void Insert(T value)
+        public FibonacciHeap()
         {
-            var newNode = new FibonacciHeapNode<T>(value);
+            Count = 0;
+        }
+
+        public void Insert(TE element, TP priority)
+        {
+            var newNode = new FibonacciHeapNode<TE, TP>(element, priority);
             if (Empty)
             {
                 Root = newNode;
@@ -43,9 +44,10 @@ namespace Graft.DataStructures
                     Root = newNode;
                 }
             }
+            Count++;
         }
 
-        public T ExtractMinimum()
+        public TE ExtractMinimum()
         {
             if (Empty)
             {
@@ -54,7 +56,7 @@ namespace Graft.DataStructures
 
             // Step 1 - remove minimum element
             // Get minimum node and set root pointer to one of it's siblings (could be null if there are none)
-            FibonacciHeapNode<T> minimumNode = Root;
+            FibonacciHeapNode<TE, TP> minimumNode = Root;
             Root = minimumNode.LeftSibling ?? minimumNode.RightSibling;
 
             // Connect siblings, if any
@@ -90,83 +92,111 @@ namespace Graft.DataStructures
             }
 
             // Step 3 - consolidate trees
+            // TODO: implement tree consolidation
 
+            // Update count
+            Count--;
 
             // Done, return minimum
-            return minimumNode.Value;
+            return minimumNode.Element;
+        }
+
+        public void DecreaseKey(TE element, TP priority)
+        {
+            // TODO: implement key decreasing
+            throw new NotImplementedException();
+        }
+
+        public bool Contains(TE element)
+        {
+            return GetNode(element) != null;
+        }
+
+        public TP GetPriorityOf(TE element)
+        {
+            var node = GetNode(element);
+            if (node != null)
+            {
+                return node.Priority;
+            }
+            else
+            {
+                throw new InvalidOperationException("Can't get priority of an element that is not in the heap.");
+            }
         }
         
-        private void Append(FibonacciHeapNode<T> heap1, FibonacciHeapNode<T> heap2)
+        private void Append(FibonacciHeapNode<TE, TP> heap1, FibonacciHeapNode<TE, TP> heap2)
         {
             heap1.RightSibling = heap2;
             heap2.LeftSibling = heap1;
         }
+
+        private FibonacciHeapNode<TE, TP> GetNode(TE element)
+        {
+            if (Empty)
+            {
+                return null;
+            }
+            else
+            {
+                // Check nodes in breadth first search order: siblings first, then children
+                Queue<FibonacciHeapNode<TE, TP>> nodesToCheck = new Queue<FibonacciHeapNode<TE, TP>>(Root.GetAllSiblings());
+                while (nodesToCheck.Count > 0)
+                {
+                    var node = nodesToCheck.Dequeue();
+                    if (node.Element.Equals(element))
+                    {
+                        // Element is contained!
+                        return node;
+                    }
+                    else if (node.Children != null)
+                    {
+                        // Enqueue child nodes
+                        foreach (FibonacciHeapNode<TE, TP> childNode in node.Children.GetAllSiblings())
+                        {
+                            nodesToCheck.Enqueue(childNode);
+                        }
+                    }
+                }
+                // If we got here, the element is not in the heap!
+                return null;
+            }
+        }
     }
 
-    internal class FibonacciHeapNode<T> where T : IComparable
+    internal class FibonacciHeapNode<TE, TP> where TP : IComparable
     {
-        public T Value { get; }
+        public TE Element { get; }
+
+        public TP Priority { get; set; }
 
         public int Order { get; set; }
 
-        //public T Minimum
-        //{
-        //    get
-        //    {
-        //        return MinimumAmongSibglings.Value;
-        //    }
-        //}
+        public FibonacciHeapNode<TE, TP> Children { get; set; }
 
-        public FibonacciHeapNode<T> Children { get; set; }
+        public FibonacciHeapNode<TE, TP> LeftSibling { get; set; }
 
-        public FibonacciHeapNode<T> LeftSibling { get; set; }
-
-        public FibonacciHeapNode<T> RightSibling { get; set; }
-
-        //public FibonacciHeapNode<T> MinimumAmongSibglings { get; set; }
+        public FibonacciHeapNode<TE, TP> RightSibling { get; set; }
 
         public bool HasLostAChild { get; set; }
 
-        public FibonacciHeapNode(T value)
+        public FibonacciHeapNode(TE element, TP priority)
         {
-            Value = value;
+            Element = element;
+            Priority = priority;
             Order = 0;
             Children = null;
             LeftSibling = null;
             RightSibling = null;
         }
 
-        //public FibonacciHeapNode<T> GetLeftmostSibling()
-        //{
-        //    if (LeftSibling == null)
-        //    {
-        //        return this;
-        //    }
-        //    else
-        //    {
-        //        return LeftSibling.GetLeftmostSibling();
-        //    }
-        //}
-
-        //public FibonacciHeapNode<T> GetRightmostSibling()
-        //{
-        //    if (RightSibling == null)
-        //    {
-        //        return this;
-        //    }
-        //    else
-        //    {
-        //        return RightSibling.GetRightmostSibling();
-        //    }
-        //}
-
-        public FibonacciHeapNode<T> GetMinimumNodeAmongSibglings()
+        public FibonacciHeapNode<TE, TP> GetMinimumNodeAmongSibglings()
         {
-            FibonacciHeapNode<T> minimumNode = this;
+            FibonacciHeapNode<TE, TP> minimumNode = this;
 
             // Find minimum
-            FibonacciHeapNode<T> leftIterator = LeftSibling;
-            FibonacciHeapNode<T> rightIterator = RightSibling;
+            FibonacciHeapNode<TE, TP> leftIterator = LeftSibling;
+            FibonacciHeapNode<TE, TP> rightIterator = RightSibling;
 
             // Look for a smaller node on the left
             while (leftIterator != null)
@@ -192,9 +222,35 @@ namespace Graft.DataStructures
             return minimumNode;
         }
 
-        public bool IsSmallerThan(FibonacciHeapNode<T> node)
+        public HashSet<FibonacciHeapNode<TE, TP>> GetAllSiblings()
         {
-            return Value.CompareTo(node.Value) == -1;
+            HashSet<FibonacciHeapNode<TE, TP>> siblings = new HashSet<FibonacciHeapNode<TE, TP>>();
+            siblings.Add(this);
+
+            // Find siblings
+            FibonacciHeapNode<TE, TP> leftIterator = LeftSibling;
+            FibonacciHeapNode<TE, TP> rightIterator = RightSibling;
+            
+            // Enumerate siblings on the left
+            while (leftIterator != null)
+            {
+                siblings.Add(leftIterator);
+                leftIterator = leftIterator.LeftSibling;
+            }
+
+            // Enumerate siblings on the right
+            while (rightIterator != null)
+            {
+                siblings.Add(rightIterator);
+                rightIterator = rightIterator.RightSibling;
+            }
+
+            return siblings;
+        }
+
+        public bool IsSmallerThan(FibonacciHeapNode<TE, TP> node)
+        {
+            return Priority.CompareTo(node.Priority) == -1;
         }
     }
 }
