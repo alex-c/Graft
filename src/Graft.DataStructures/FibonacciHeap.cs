@@ -1,6 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Text;
+using System.Linq;
 
 namespace Graft.DataStructures
 {
@@ -92,7 +92,7 @@ namespace Graft.DataStructures
             }
 
             // Step 3 - consolidate trees
-            // TODO: implement tree consolidation
+            ConsolidateTrees();
 
             // Update count
             Count--;
@@ -103,8 +103,14 @@ namespace Graft.DataStructures
 
         public void DecreaseKey(TE element, TP priority)
         {
-            // TODO: implement key decreasing
-            throw new NotImplementedException();
+            FibonacciHeapNode<TE, TP> node = GetNode(element);
+            node.Priority = priority;
+
+            // If the heap order is violated, extract the subtree and move it to the main tree list
+            if (node.IsSmallerThan(node.Parent))
+            {
+                ExtractTree(node);
+            }
         }
 
         public bool Contains(TE element)
@@ -124,11 +130,114 @@ namespace Graft.DataStructures
                 throw new InvalidOperationException("Can't get priority of an element that is not in the heap.");
             }
         }
-        
+
+        private void ConsolidateTrees()
+        {
+            // Keep track of which trees have which rank
+            Dictionary<int, FibonacciHeapNode<TE, TP>> RankRoots = new Dictionary<int, FibonacciHeapNode<TE, TP>>();
+
+            // Check each tree
+            foreach (FibonacciHeapNode<TE, TP> node in Root.GetAllSiblings())
+            {
+                FibonacciHeapNode<TE, TP> newTreeRoot = node;
+                int rank = newTreeRoot.GetRank();
+
+                // If there is already a tree with the same rank, merge them
+                while (RankRoots.ContainsKey(rank))
+                {
+                    FibonacciHeapNode<TE, TP> nodeToLink = RankRoots[rank];
+                    RankRoots.Remove(rank);
+                    newTreeRoot = MergeHeaps(node, nodeToLink);
+                    rank = newTreeRoot.GetRank();
+                }
+
+                // The tree - newly merged or not - is currently the only known tree with that rank
+                RankRoots.Add(rank, newTreeRoot);
+            }
+        }
+
         private void Append(FibonacciHeapNode<TE, TP> heap1, FibonacciHeapNode<TE, TP> heap2)
         {
-            heap1.RightSibling = heap2;
-            heap2.LeftSibling = heap1;
+            var rightEdge = heap1.GetRightmostSibling();
+            var leftEdge = heap2.GetLeftmostSibling();
+            rightEdge.RightSibling = leftEdge;
+            leftEdge.LeftSibling = rightEdge;
+        }
+
+        private FibonacciHeapNode<TE, TP> MergeHeaps(FibonacciHeapNode<TE, TP> heap1, FibonacciHeapNode<TE, TP> heap2)
+        {
+            if (heap1.IsSmallerThan(heap2))
+            {
+                return MergeInto(heap1, heap2);
+            }
+            else
+            {
+                return MergeInto(heap2, heap1);
+            }
+        }
+
+        private FibonacciHeapNode<TE, TP> MergeInto(FibonacciHeapNode<TE, TP> root, FibonacciHeapNode<TE, TP> tree)
+        {
+            // Extract tree to merge from its siblings
+            if (tree.LeftSibling != null)
+            {
+                tree.LeftSibling.RightSibling = tree.RightSibling;
+            }
+            if (tree.RightSibling != null)
+            {
+                tree.RightSibling.LeftSibling = tree.LeftSibling;
+            }
+            tree.LeftSibling = null;
+            tree.RightSibling = null;
+
+            // Merge tree into children of root
+            if (root.Children == null)
+            {
+                root.Children = tree;
+            }
+            else
+            {
+                Append(root.Children, tree);
+            }
+            tree.Parent = root;
+
+            // Return the resulting heap
+            return root;
+        }
+
+        private void ExtractTree(FibonacciHeapNode<TE, TP> node)
+        {
+            FibonacciHeapNode<TE, TP> parent = node.Parent;
+
+            // Extract
+            node.Parent = null;
+            if (node.LeftSibling != null)
+            {
+                node.LeftSibling.RightSibling = node.RightSibling;
+            }
+            if (node.RightSibling != null)
+            {
+                node.RightSibling.LeftSibling = node.LeftSibling;
+            }
+            node.LeftSibling = null;
+            node.RightSibling = null;
+
+            // Move to root tree list
+            Append(Root, node);
+
+            // If the parent had already lost a child extract it too
+            if (parent != null)
+            {
+                if (parent.HasLostAChild)
+                {
+                    parent.HasLostAChild = false;
+                    ExtractTree(parent);
+                }
+                else
+                {
+                    parent.HasLostAChild = true;
+                }
+            }
         }
 
         private FibonacciHeapNode<TE, TP> GetNode(TE element)
@@ -170,7 +279,7 @@ namespace Graft.DataStructures
 
         public TP Priority { get; set; }
 
-        public int Order { get; set; }
+        public FibonacciHeapNode<TE, TP> Parent { get; set; }
 
         public FibonacciHeapNode<TE, TP> Children { get; set; }
 
@@ -184,10 +293,11 @@ namespace Graft.DataStructures
         {
             Element = element;
             Priority = priority;
-            Order = 0;
+            Parent = null;
             Children = null;
             LeftSibling = null;
             RightSibling = null;
+            HasLostAChild = false;
         }
 
         public FibonacciHeapNode<TE, TP> GetMinimumNodeAmongSibglings()
@@ -224,8 +334,10 @@ namespace Graft.DataStructures
 
         public HashSet<FibonacciHeapNode<TE, TP>> GetAllSiblings()
         {
-            HashSet<FibonacciHeapNode<TE, TP>> siblings = new HashSet<FibonacciHeapNode<TE, TP>>();
-            siblings.Add(this);
+            HashSet<FibonacciHeapNode<TE, TP>> siblings = new HashSet<FibonacciHeapNode<TE, TP>>
+            {
+                this
+            };
 
             // Find siblings
             FibonacciHeapNode<TE, TP> leftIterator = LeftSibling;
@@ -246,6 +358,43 @@ namespace Graft.DataStructures
             }
 
             return siblings;
+        }
+
+        public FibonacciHeapNode<TE, TP> GetLeftmostSibling()
+        {
+            FibonacciHeapNode<TE, TP> iterator = this;
+            
+            while (iterator.LeftSibling != null)
+            {
+                iterator = iterator.LeftSibling;
+            }
+
+            return iterator;
+        }
+
+        public FibonacciHeapNode<TE, TP> GetRightmostSibling()
+        {
+            FibonacciHeapNode<TE, TP> iterator = this;
+
+            while (iterator.RightSibling != null)
+            {
+                iterator = iterator.RightSibling;
+            }
+
+            return iterator;
+        }
+
+        public int GetRank()
+        {
+            if (Children == null)
+            {
+                return 0;
+            }
+            else
+            {
+                HashSet<FibonacciHeapNode<TE, TP>> siblings = Children.GetAllSiblings();
+                return 1 + siblings.Max(n => n.GetRank());
+            }
         }
 
         public bool IsSmallerThan(FibonacciHeapNode<TE, TP> node)
