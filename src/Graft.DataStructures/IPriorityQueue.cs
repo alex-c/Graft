@@ -8,6 +8,8 @@ namespace Graft.DataStructures
     {
         bool Empty { get; }
 
+        int Count { get; }
+
         void Enqueue(TE element, TP priority);
 
         TE Dequeue();

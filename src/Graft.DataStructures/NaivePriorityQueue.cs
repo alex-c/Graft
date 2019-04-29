@@ -8,7 +8,9 @@ namespace Graft.DataStructures
     {
         private Dictionary<TE, TP> Elements { get; }
 
-        public bool Empty => throw new NotImplementedException();
+        public bool Empty => Elements.Count == 0;
+
+        public int Count => Elements.Count;
 
         public NaivePriorityQueue()
         {
@@ -17,7 +19,9 @@ namespace Graft.DataStructures
 
         public TE Dequeue()
         {
-            return Elements.OrderBy(e => e.Value).FirstOrDefault().Key;
+            TE elementToRemove = Elements.OrderBy(e => e.Value).FirstOrDefault().Key;
+            Elements.Remove(elementToRemove);
+            return elementToRemove;
         }
 
         public void Enqueue(TE element, TP priority)
