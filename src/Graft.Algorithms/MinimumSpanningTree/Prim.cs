@@ -1,4 +1,5 @@
-﻿using Graft.Default;
+﻿using Graft.DataStructures;
+using Graft.Default;
 using Graft.Primitives;
 using System;
 using System.Collections.Generic;
@@ -20,7 +21,7 @@ namespace Graft.Algorithms.MinimumSpanningTree
         /// <returns>Returns the minimum spanning tree of the given graph.</returns>
         public static IWeightedGraph<TV, TW> FindMinimumSpanningTree<TV, TW>(IWeightedGraph<TV, TW> graph, TW min, TW max) 
             where TV : IEquatable<TV>
-            where TW : IComparable<TW>
+            where TW : IComparable
         {
             // Builder used to incrementally build the target minimum spanning tree
             GraphBuilder<TV, TW> builder = new GraphBuilder<TV, TW>();
@@ -29,9 +30,9 @@ namespace Graft.Algorithms.MinimumSpanningTree
             IEnumerable<IVertex<TV>> verteces = graph.GetAllVerteces();
             IEnumerable<IWeightedEdge<TV, TW>> edges = graph.GetAllEdges();
 
-            // TODO: replace with priority queue?
+            // TODO: replace with more performant priority queue implementation
             // Track minimum known cost to connect to target vertex
-            Dictionary<TV, TW> vertexCosts = new Dictionary<TV, TW>();
+            IPriorityQueue<TV, TW> vertexCosts = new NaivePriorityQueue<TV, TW>();
 
             // Track target vertex and edge connecting to target vertex with minimum known cost
             Dictionary<TV, IVertex<TV>> vertexValue = new Dictionary<TV, IVertex<TV>>();
@@ -40,24 +41,23 @@ namespace Graft.Algorithms.MinimumSpanningTree
             // Initialize vertex costs with all costs set to max
             foreach (IVertex<TV> vertex in verteces)
             {
-                vertexCosts.Add(vertex.Value, max);
+                vertexCosts.Enqueue(vertex.Value, max);
                 vertexValue.Add(vertex.Value, vertex);
                 vertexEdges.Add(vertex.Value, null);
             }
 
             // Set starting vertex
-            vertexCosts[verteces.First().Value] = min;
+            vertexCosts.UpdatePriority(verteces.First().Value, min);
 
             // While there are verteces left to add, select vertex with smallest cost
-            while (vertexCosts.Any())
+            while (!vertexCosts.Empty)
             {
                 // Get and remove vertex with smallest cost
-                KeyValuePair<TV, TW> minCost = vertexCosts.OrderBy(vc => vc.Value).First();
-                vertexCosts.Remove(minCost.Key);
+                TV minCost = vertexCosts.Dequeue();
 
                 // For easier handling, get vertex and edge
-                IVertex<TV> vertex = vertexValue[minCost.Key];
-                IWeightedEdge<TV, TW> edge = vertexEdges[minCost.Key];
+                IVertex<TV> vertex = vertexValue[minCost];
+                IWeightedEdge<TV, TW> edge = vertexEdges[minCost];
 
                 // Add vertex and edge to target MST
                 builder.AddVertex(vertex.Value);
@@ -71,10 +71,10 @@ namespace Graft.Algorithms.MinimumSpanningTree
                 {
                     // Ignore edges leading to verteces already added to the MST
                     IVertex<TV> targetVertex = connectedEdge.ConnectedVertex(vertex);
-                    if (vertexCosts.ContainsKey(targetVertex.Value) &&
-                        connectedEdge.Weight.CompareTo(vertexCosts[targetVertex.Value]) < 0)
+                    if (vertexCosts.Contains(targetVertex.Value) &&
+                        connectedEdge.Weight.CompareTo(vertexCosts.GetPriorityOf(targetVertex.Value)) < 0)
                     {
-                        vertexCosts[targetVertex.Value] = connectedEdge.Weight;
+                        vertexCosts.UpdatePriority(targetVertex.Value, connectedEdge.Weight);
                         vertexEdges[targetVertex.Value] = connectedEdge;
                     }
                 }
