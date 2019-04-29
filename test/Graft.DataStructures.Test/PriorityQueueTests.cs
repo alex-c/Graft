@@ -24,6 +24,7 @@ namespace Graft.DataStructures.Test
             {
                 Assert.AreEqual(true, queue.Empty);
                 Assert.AreEqual(0, queue.Count);
+                Assert.AreEqual(false, queue.Contains(new Vertex<int>(0)));
             }
         }
 
@@ -32,9 +33,11 @@ namespace Graft.DataStructures.Test
         {
             foreach (IPriorityQueue<IVertex<int>, double> queue in QueueImplementations)
             {
-                queue.Enqueue(new Vertex<int>(1), 0.1);
+                IVertex<int> vertex = new Vertex<int>(1);
+                queue.Enqueue(vertex, 0.1);
                 Assert.AreEqual(false, queue.Empty);
                 Assert.AreEqual(1, queue.Count);
+                Assert.AreEqual(true, queue.Contains(vertex));
             }
         }
 
@@ -43,13 +46,15 @@ namespace Graft.DataStructures.Test
         {
             foreach (IPriorityQueue<IVertex<int>, double> queue in QueueImplementations)
             {
+                IVertex<int> vertexToDequeue = new Vertex<int>(2);
                 queue.Enqueue(new Vertex<int>(1), 0.3);
-                queue.Enqueue(new Vertex<int>(2), 0.1);
+                queue.Enqueue(vertexToDequeue, 0.1);
                 queue.Enqueue(new Vertex<int>(3), 0.2);
                 queue.Enqueue(new Vertex<int>(4), 17.7);
                 queue.Enqueue(new Vertex<int>(5), 1.0);
-                Assert.AreEqual(2, queue.Dequeue().Value);
+                Assert.AreEqual(vertexToDequeue.Value, queue.Dequeue().Value);
                 Assert.AreEqual(4, queue.Count);
+                Assert.AreEqual(false, queue.Contains(vertexToDequeue));
                 queue.Dequeue();
                 queue.Dequeue();
                 queue.Dequeue();

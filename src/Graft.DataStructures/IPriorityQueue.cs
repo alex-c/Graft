@@ -1,6 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Text;
 
 namespace Graft.DataStructures
 {
@@ -9,6 +7,10 @@ namespace Graft.DataStructures
         bool Empty { get; }
 
         int Count { get; }
+
+        bool Contains(TE element);
+
+        TP GetPriorityOf(TE element);
 
         void Enqueue(TE element, TP priority);
 

@@ -17,6 +17,23 @@ namespace Graft.DataStructures
             Elements = new Dictionary<TE, TP>();
         }
 
+        public bool Contains(TE element)
+        {
+            return Elements.Keys.Contains(element);
+        }
+
+        public TP GetPriorityOf(TE element)
+        {
+            if (Contains(element))
+            {
+                return Elements[element];
+            }
+            else
+            {
+                throw new KeyNotFoundException("Element not contained in queue!");
+            }
+        }
+
         public TE Dequeue()
         {
             TE elementToRemove = Elements.OrderBy(e => e.Value).FirstOrDefault().Key;
