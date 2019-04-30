@@ -47,19 +47,26 @@ namespace Graft.DataStructures.Test
         {
             foreach (IPriorityQueue<IVertex<int>, double> queue in QueueImplementations)
             {
+                // Populate queue
                 IVertex<int> vertexToDequeue = new Vertex<int>(2);
                 queue.Enqueue(new Vertex<int>(1), 0.3);
                 queue.Enqueue(vertexToDequeue, 0.1);
                 queue.Enqueue(new Vertex<int>(3), 0.2);
                 queue.Enqueue(new Vertex<int>(4), 17.7);
                 queue.Enqueue(new Vertex<int>(5), 1.0);
+
+                // Dequeue and check first element
                 Assert.AreEqual(vertexToDequeue.Value, queue.Dequeue().Value);
                 Assert.AreEqual(4, queue.Count);
                 Assert.AreEqual(false, queue.Contains(vertexToDequeue));
-                queue.Dequeue();
-                queue.Dequeue();
-                queue.Dequeue();
-                queue.Dequeue();
+
+                // Dequeue other elements
+                Assert.AreEqual(3, queue.Dequeue().Value);
+                Assert.AreEqual(1, queue.Dequeue().Value);
+                Assert.AreEqual(5, queue.Dequeue().Value);
+                Assert.AreEqual(4, queue.Dequeue().Value);
+
+                // Queue empty
                 Assert.AreEqual(true, queue.Empty);
                 Assert.AreEqual(0, queue.Count);
             }
