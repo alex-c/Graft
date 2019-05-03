@@ -36,6 +36,8 @@ namespace Graft
 
         IEnumerable<IEdge<T>> GetEdgesOfVertex(IVertex<T> vertex);
 
+        IEdge<T> GetEdgeBetweenVerteces(IVertex<T> source, IVertex<T> target);
+
         #endregion
     }
 }

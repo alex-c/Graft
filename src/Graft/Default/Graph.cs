@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using Graft.Primitives;
 using System.Linq;
+using Graft.Exceptions;
 
 namespace Graft.Default
 {
@@ -117,6 +118,24 @@ namespace Graft.Default
         IEnumerable<IEdge<TV>> IGraph<TV>.GetEdgesOfVertex(IVertex<TV> vertex)
         {
             return GetEdgesOfVertex(vertex);
+        }
+
+        public IWeightedEdge<TV, TW> GetEdgeBetweenVerteces(IVertex<TV> source, IVertex<TV> target)
+        {
+            if (ContainsVertex(source) && ContainsVertex(target))
+            {
+                Edge<TV, TW> edge = Adjacency[source.Value].FirstOrDefault(t => t.TargetVertex == target);
+                return edge ?? throw new VertecesNotConnectedException<TV>(source, target);
+            }
+            else
+            {
+                throw new InvalidOperationException("The passed vertex is not a vertex of this graph.");
+            }
+        }
+
+        IEdge<TV> IGraph<TV>.GetEdgeBetweenVerteces(IVertex<TV> source, IVertex<TV> target)
+        {
+            return GetEdgeBetweenVerteces(source, target);
         }
 
         #endregion
