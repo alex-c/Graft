@@ -1,11 +1,11 @@
 ﻿using System;
 using System.Runtime.Serialization;
 
-namespace Graft.Algorithms.TravelingSalesmanProblem
+namespace Graft.Exceptions
 {
     public class GraphNotCompleteException : Exception
     {
-        public GraphNotCompleteException() { }
+        public GraphNotCompleteException() : this("The graph is not complete.") { }
 
         public GraphNotCompleteException(string message) : base(message) { }
 
