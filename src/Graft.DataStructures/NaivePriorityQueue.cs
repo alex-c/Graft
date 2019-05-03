@@ -36,9 +36,18 @@ namespace Graft.DataStructures
 
         public TE Dequeue()
         {
-            TE elementToRemove = Elements.OrderBy(e => e.Value).FirstOrDefault().Key;
-            Elements.Remove(elementToRemove);
-            return elementToRemove;
+            TE minElement = Elements.First().Key;
+            TP minPriority = Elements.First().Value;
+            foreach (KeyValuePair<TE, TP> element in Elements)
+            {
+                if (element.Value.CompareTo(minPriority) == -1)
+                {
+                    minElement = element.Key;
+                    minPriority = element.Value;
+                }
+            }
+            Elements.Remove(minElement);
+            return minElement;
         }
 
         public void Enqueue(TE element, TP priority)
