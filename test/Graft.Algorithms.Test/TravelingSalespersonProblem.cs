@@ -1,5 +1,6 @@
 ﻿using Graft.Algorithms.TravelingSalesmanProblem;
 using Graft.Default;
+using Graft.Exceptions;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System.Linq;
 
