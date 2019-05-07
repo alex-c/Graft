@@ -31,7 +31,7 @@ namespace Graft.Algorithms.TravelingSalesmanProblem
                 {
                     try
                     {
-                        builder.AddEdge(lastVertex.Value, vertex.Value, graph.GetEdgeBetweenVerteces(lastVertex, vertex).Weight);
+                        builder.AddEdge(lastVertex.Value, vertex.Value, graph.GetEdgeBetweenVerteces(lastVertex.Value, vertex.Value).Weight);
                     }
                     catch (VertecesNotConnectedException<TV> exception)
                     {
