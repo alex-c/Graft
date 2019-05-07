@@ -11,5 +11,7 @@ namespace Graft
         new IEnumerable<IWeightedEdge<TV, TW>> GetEdgesOfVertex(IVertex<TV> vertex);
 
         new IWeightedEdge<TV, TW> GetEdgeBetweenVerteces(IVertex<TV> source, IVertex<TV> target);
+
+        new IWeightedEdge<TV, TW> GetEdgeBetweenVerteces(TV sourceVertexValue, TV targetVertexValue);
     }
 }

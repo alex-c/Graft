@@ -124,18 +124,36 @@ namespace Graft.Default
         {
             if (ContainsVertex(source) && ContainsVertex(target))
             {
-                Edge<TV, TW> edge = Adjacency[source.Value].FirstOrDefault(t => t.TargetVertex == target);
+                Edge<TV, TW> edge = Adjacency[source.Value].FirstOrDefault(t => t.ConnectedVertex(source) == target);
                 return edge ?? throw new VertecesNotConnectedException<TV>(source, target);
             }
             else
             {
-                throw new InvalidOperationException("The passed vertex is not a vertex of this graph.");
+                throw new InvalidOperationException("At least one of the passed verteces is not a vertex of this graph.");
             }
         }
 
         IEdge<TV> IGraph<TV>.GetEdgeBetweenVerteces(IVertex<TV> source, IVertex<TV> target)
         {
             return GetEdgeBetweenVerteces(source, target);
+        }
+
+        public IWeightedEdge<TV, TW> GetEdgeBetweenVerteces(TV sourceVertexValue, TV targetVertexValue)
+        {
+            if (ContainsVertex(sourceVertexValue) && ContainsVertex(targetVertexValue))
+            {
+                Edge<TV, TW> edge = Adjacency[sourceVertexValue].FirstOrDefault(t => t.ConnectedVertex(sourceVertexValue).Value.Equals(targetVertexValue));
+                return edge ?? throw new VertecesNotConnectedException<TV>(sourceVertexValue, targetVertexValue);
+            }
+            else
+            {
+                throw new InvalidOperationException("At least one of the passed verteces is not a vertex of this graph.");
+            }
+        }
+
+        IEdge<TV> IGraph<TV>.GetEdgeBetweenVerteces(TV sourceVertexValue, TV targetVertexValue)
+        {
+            return GetEdgeBetweenVerteces(sourceVertexValue, targetVertexValue);
         }
 
         #endregion

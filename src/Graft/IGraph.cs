@@ -10,6 +10,8 @@ namespace Graft
 
         int VertexCount { get; }
 
+        // TODO: add edge count property?
+
         #region Vertex access
 
         IVertex<T> GetFirstVertex();
@@ -37,6 +39,8 @@ namespace Graft
         IEnumerable<IEdge<T>> GetEdgesOfVertex(IVertex<T> vertex);
 
         IEdge<T> GetEdgeBetweenVerteces(IVertex<T> source, IVertex<T> target);
+
+        IEdge<T> GetEdgeBetweenVerteces(T sourceVertexValue, T targetVertexValue);
 
         #endregion
     }

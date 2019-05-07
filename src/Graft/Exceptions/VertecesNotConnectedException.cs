@@ -8,8 +8,10 @@ namespace Graft.Exceptions
     {
         public VertecesNotConnectedException() : this("The verteces are not connected in this graph.") { }
 
-        public VertecesNotConnectedException(IVertex<TV> source, IVertex<TV> target)
-            : this($"The verteces with values {source.Value} and {target.Value} are not connected in this graph.") { }
+        public VertecesNotConnectedException(IVertex<TV> source, IVertex<TV> target) : this(source.Value, target.Value) { }
+
+        public VertecesNotConnectedException(TV sourceVertexValue, TV targetVertexValue)
+            : this($"The verteces with values {sourceVertexValue} and {targetVertexValue} are not connected in this graph.") { }
 
         public VertecesNotConnectedException(string message) : base(message) { }
 
