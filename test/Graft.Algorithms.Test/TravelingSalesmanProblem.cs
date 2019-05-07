@@ -58,7 +58,7 @@ namespace Graft.Algorithms.Tests
 
             // Check result
             Assert.AreEqual(10, route.VertexCount);
-            Assert.AreEqual(9, route.GetAllEdges().Count());
+            Assert.AreEqual(10, route.GetAllEdges().Count());
         }
 
         [TestMethod]
@@ -72,7 +72,7 @@ namespace Graft.Algorithms.Tests
 
             // Check result
             Assert.AreEqual(10, route.VertexCount);
-            Assert.AreEqual(9, route.GetAllEdges().Count());
+            Assert.AreEqual(10, route.GetAllEdges().Count());
         }
     }
 }

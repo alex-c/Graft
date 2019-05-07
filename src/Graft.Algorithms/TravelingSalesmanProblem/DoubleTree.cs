@@ -37,6 +37,11 @@ namespace Graft.Algorithms.TravelingSalesmanProblem
                 lastVertex = currentVertex;
             });
 
+            // Add closing edge
+            IVertex<TV> firstVertex = msp.GetFirstVertex();
+            IWeightedEdge<TV, TW> closingEdge = graph.GetEdgeBetweenVerteces(lastVertex.Value, firstVertex.Value);
+            builder.AddEdge(lastVertex.Value, firstVertex.Value, closingEdge.Weight);
+
             // Done!
             return builder.Build();
         }

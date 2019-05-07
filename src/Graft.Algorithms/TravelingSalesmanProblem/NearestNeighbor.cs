@@ -13,8 +13,7 @@ namespace Graft.Algorithms.TravelingSalesmanProblem
         {
             return FindTour(graph, graph.GetFirstVertex());
         }
-
-        // TODO: should the result graph connect to the source vertex again (= be a cycle)?
+        
         public static IWeightedGraph<TV, TW> FindTour<TV, TW>(IWeightedGraph<TV, TW> graph, IVertex<TV> source) where TV : IEquatable<TV>
         {
             GraphBuilder<TV, TW> builder = new GraphBuilder<TV, TW>();
@@ -28,28 +27,44 @@ namespace Graft.Algorithms.TravelingSalesmanProblem
             int edgesUsed = 0;
 
             // Find and use minimum non-used edge leading from each vertex
-            while (edgesUsed < graph.VertexCount - 1)
+            while (edgesUsed < graph.VertexCount)
             {
-                IWeightedEdge<TV, TW> minEdge = graph.GetEdgesOfVertex(currentVertex)
-                    .Where(e => !visitedVerteces.Contains(e.ConnectedVertex(currentVertex).Value))
-                    .OrderBy(e => e.Weight)
-                    .FirstOrDefault();
-                if (minEdge == null)
+                // Last edge, select edge back to start
+                if (edgesUsed == graph.VertexCount - 1)
                 {
-                    throw new GraphNotCompleteException("The NearestNeighbor algorithm expects the input graph to be complete!");
+                    try
+                    {
+                        IWeightedEdge<TV, TW> closingEdge = graph.GetEdgeBetweenVerteces(currentVertex, source);
+                        builder.AddEdge(currentVertex.Value, source.Value, closingEdge.Weight);
+                    }
+                    catch (VertecesNotConnectedException<TV> exception)
+                    {
+                        throw new GraphNotCompleteException("The NearestNeighbor algorithm expects the input graph to be complete!", exception);
+                    }
                 }
+                else
+                {
+                    IWeightedEdge<TV, TW> minEdge = graph.GetEdgesOfVertex(currentVertex)
+                        .Where(e => !visitedVerteces.Contains(e.ConnectedVertex(currentVertex).Value))
+                        .OrderBy(e => e.Weight)
+                        .FirstOrDefault();
+                    if (minEdge == null)
+                    {
+                        throw new GraphNotCompleteException("The NearestNeighbor algorithm expects the input graph to be complete!");
+                    }
 
-                // Get target vertex and update current vertex
-                IVertex<TV> target = minEdge.ConnectedVertex(currentVertex);
-                currentVertex = target;
+                    // Get target vertex and update current vertex
+                    IVertex<TV> target = minEdge.ConnectedVertex(currentVertex);
+                    currentVertex = target;
 
-                // Update tracking
-                visitedVerteces.Add(target.Value);
+                    // Update tracking
+                    visitedVerteces.Add(target.Value);
+
+                    // Update result graph
+                    builder.AddVertex(target.Value);
+                    builder.AddEdge(source.Value, target.Value, minEdge.Weight);
+                }
                 edgesUsed++;
-
-                // Update result graph
-                builder.AddVertex(target.Value);
-                builder.AddEdge(source.Value, target.Value, minEdge.Weight);
             }
 
             // Done: used n-1 edges for n verteces
