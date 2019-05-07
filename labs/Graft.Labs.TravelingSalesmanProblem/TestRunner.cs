@@ -37,7 +37,8 @@ namespace Graft.Labs.TravelingSalesmanProblem
             AlgorithmsToTest = new HashSet<TspAlgorithm>()
             {
                 TspAlgorithm.NearestNeighbor,
-                TspAlgorithm.DoubleTree
+                TspAlgorithm.DoubleTree,
+                TspAlgorithm.BruteForce
             };
 
             // Configure Serilog
@@ -62,7 +63,7 @@ namespace Graft.Labs.TravelingSalesmanProblem
 
             // Prepare table printing
             PrettyPrinter printer = new PrettyPrinter(Logger);
-            TableBuilder table = printer.BuildTable(new string[] { "Graph", "Algorithm", "Route Costs", "Time" }, "Traveling Salesman Problem");
+            TableBuilder table = printer.BuildTable(new string[] { "Graph", "Algorithm", "Route Costs", "Time" });
 
             // Perform tests
             Logger.LogInformation("Run TSP tests...");
@@ -118,6 +119,13 @@ namespace Graft.Labs.TravelingSalesmanProblem
                     route = Algorithms.TravelingSalesmanProblem.DoubleTree.FindTour(graph);
                     sw.Stop();
                     break;
+                case TspAlgorithm.BruteForce:
+                    sw.Start();
+                    route = Algorithms.TravelingSalesmanProblem.BruteForce.FindOptimalTour(graph, 0.0, double.MaxValue, (w1, w2) => w1 + w2);
+                    sw.Stop();
+                    break;
+                default:
+                    throw new NotSupportedException($"Testing the TSP algorithm {algorithm} is currently not supported!");
             }
 
             Logger.LogDebug($" - Computed route for '{file}' using {algorithm} algorithm in {sw.Elapsed}.");
