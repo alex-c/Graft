@@ -1,5 +1,6 @@
 ﻿using Graft.Algorithms.TravelingSalesmanProblem;
 using Graft.Default;
+using Graft.Default.File;
 using Graft.Exceptions;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System.Linq;
@@ -36,6 +37,19 @@ namespace Graft.Algorithms.Tests
                 NearestNeighbor.FindTour(graph, graph.GetFirstMatchingVertex(v => v.Value == 3));
             }
             catch (GraphNotCompleteException) { /* expected */ }
+        }
+
+        [TestMethod]
+        public void TestSimpleDoubleTree()
+        {
+            GraphFactory<int, double> factory = new GraphFactory<int, double>();
+            Graph<int, double> graph = factory.CreateGraphFromFile("./graphs/complete/K_10.txt", new DefaultGraphTextLineParser());
+
+            // Start from vertex 0
+            IWeightedGraph<int, double> route = DoubleTree.FindTour(graph);
+            Assert.AreEqual(5, route.VertexCount);
+            Assert.AreEqual(4, route.GetAllEdges().Count());
+            Assert.AreEqual(1.4, route.GetAllEdges().Sum(e => e.Weight));
         }
     }
 }
