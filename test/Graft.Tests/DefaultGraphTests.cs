@@ -1,8 +1,6 @@
 ﻿using Graft.Default;
 using Graft.Primitives;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
-using System;
-using System.Collections.Generic;
 using System.Linq;
 
 namespace Graft.Tests
@@ -10,33 +8,57 @@ namespace Graft.Tests
     [TestClass]
     public class DefaultGraphTests
     {
-        IGraph<int> TestGraph { get; }
+        private IWeightedGraph<int, double> TestGraph { get; }
 
         public DefaultGraphTests()
         {
-            Dictionary<int, HashSet<Edge<int, double>>> edges = new Dictionary<int, HashSet<Edge<int, double>>>();
-            Dictionary<int, Vertex<int>> vertexMap = new Dictionary<int, Vertex<int>>();
-            for (int i = 1; i < 5; i++)
-            {
-                vertexMap.Add(i, new Vertex<int>(i));
-                edges.Add(i, new HashSet<Edge<int, double>>());
-            }
-            HashSet<Vertex<int>> verteces = new HashSet<Vertex<int>>(vertexMap.Values);
-            edges[1].Add(new Edge<int, double>(vertexMap[1], vertexMap[2]));
-            edges[2].Add(new Edge<int, double>(vertexMap[2], vertexMap[3]));
-            edges[3].Add(new Edge<int, double>(vertexMap[3], vertexMap[1]));
-            edges[3].Add(new Edge<int, double>(vertexMap[3], vertexMap[4]));
-            TestGraph = new Graph<int, double>(verteces, edges);
+            TestGraph = new GraphBuilder<int, double>()
+                .AddVerteces(4, v => v + 1)
+                .AddEdge(1, 2)
+                .AddEdge(2, 3, 15.3)
+                .AddEdge(3, 1)
+                .AddEdge(3, 4)
+                .Build();
         }
 
         [TestMethod]
-        public void TestStuff()
+        public void TestProperties()
         {
             Assert.AreEqual(false, TestGraph.IsDirected);
+            Assert.AreEqual(4, TestGraph.VertexCount);
+        }
+
+        [TestMethod]
+        public void TestVertexAccessMethods()
+        {
+            // Get single vertex
             Assert.AreEqual(1, TestGraph.GetFirstVertex().Value);
             Assert.AreEqual(2, TestGraph.GetFirstMatchingVertex(v => v.Value == 2).Value);
+
+            // Get multiple verteces
             Assert.AreEqual(4, TestGraph.GetAllVerteces().Count());
-            Assert.AreEqual(2, TestGraph.GetAdjacentVerteces(3).Count());
+            Assert.AreEqual(2, TestGraph.GetAllMatchingVerteces(v => v.Value < 3).Count());
+
+            // Get adcacent verteces
+            IVertex<int> vertex3 = TestGraph.GetFirstMatchingVertex(v => v.Value == 3);
+            Assert.AreEqual(3, TestGraph.GetAdjacentVerteces(3).Count());
+            Assert.AreEqual(3, TestGraph.GetAdjacentVerteces(vertex3).Count());
+
+            // Contain checks
+            Assert.AreEqual(true, TestGraph.ContainsVertex(3));
+            Assert.AreEqual(true, TestGraph.ContainsVertex(vertex3));
+        }
+
+        [TestMethod]
+        public void TestEdgeAccessMethods()
+        {
+            IVertex<int> vertex1 = TestGraph.GetFirstMatchingVertex(v => v.Value == 1);
+            IVertex<int> vertex2 = TestGraph.GetFirstMatchingVertex(v => v.Value == 2);
+            IVertex<int> vertex3 = TestGraph.GetFirstMatchingVertex(v => v.Value == 3);
+
+            Assert.AreEqual(4, TestGraph.GetAllEdges().Count());
+            Assert.AreEqual(3, TestGraph.GetEdgesOfVertex(vertex3).Count());
+            Assert.AreEqual(15.3, TestGraph.GetEdgeBetweenVerteces(vertex2, vertex3).Weight);
         }
     }
 }

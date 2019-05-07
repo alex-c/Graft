@@ -19,7 +19,7 @@ namespace Graft.Tests
         }
 
         [TestMethod]
-        public void EdgeWeighterInitialization()
+        public void EdgeWeightInitialization()
         {
             Vertex<int> originVertex = new Vertex<int>(5);
             Vertex<int> targetVertex = new Vertex<int>(7);
