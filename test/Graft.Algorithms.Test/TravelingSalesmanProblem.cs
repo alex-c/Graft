@@ -10,46 +10,69 @@ namespace Graft.Algorithms.Tests
     [TestClass]
     public class TravelingSalesmanProblem
     {
-        [TestMethod]
-        public void TestSimpleNearestNeighbor()
+        private GraphFactory<int, double> Factory { get; }
+
+        public TravelingSalesmanProblem()
         {
-            GraphBuilder<int, double> builder = new GraphBuilder<int, double>();
-            Graph<int, double> graph = builder.AddVerteces(5, n => n)
-                .AddEdge(0, 1, 0.5)
-                .AddEdge(0, 2, 0.4)
-                .AddEdge(0, 3, 0.9)
-                .AddEdge(1, 2, 0.1)
-                .AddEdge(1, 4, 0.2)
-                .AddEdge(2, 3, 0.2)
-                .AddEdge(2, 4, 0.1)
-                .AddEdge(3, 4, 0.3)
-                .Build();
-
-            // Start from vertex 0 - works
-            IWeightedGraph<int, double> route = NearestNeighbor.FindTour(graph, graph.GetFirstMatchingVertex(v => v.Value == 1));
-            Assert.AreEqual(5, route.VertexCount);
-            Assert.AreEqual(4, route.GetAllEdges().Count());
-            Assert.AreEqual(1.4, route.GetAllEdges().Sum(e => e.Weight));
-
-            // Start from vertex 3 - fails because graph is not complete
-            try
-            {
-                NearestNeighbor.FindTour(graph, graph.GetFirstMatchingVertex(v => v.Value == 3));
-            }
-            catch (GraphNotCompleteException) { /* expected */ }
+            Factory = new GraphFactory<int, double>();
         }
 
         [TestMethod]
-        public void TestSimpleDoubleTree()
+        [ExpectedException(typeof(GraphNotCompleteException))]
+        public void TestNearestNerighborFailOnIncompleteGraph()
         {
-            GraphFactory<int, double> factory = new GraphFactory<int, double>();
-            Graph<int, double> graph = factory.CreateGraphFromFile("./graphs/complete/K_10.txt", new DefaultGraphTextLineParser());
+            Graph<int, double> graph = new GraphBuilder<int, double>()
+                .AddVerteces(5, v => v)
+                .AddEdge(0, 2)
+                .AddEdge(2, 1)
+                .AddEdge(2, 3)
+                .AddEdge(2, 4)
+                .Build();
 
-            // Start from vertex 0
+            NearestNeighbor.FindTour(graph);
+        }
+
+        [TestMethod]
+        [ExpectedException(typeof(GraphNotCompleteException))]
+        public void TestDoubleTreeFailOnIncompleteGraph()
+        {
+            Graph<int, double> graph = new GraphBuilder<int, double>()
+                .AddVerteces(5, v => v)
+                .AddEdge(0, 2)
+                .AddEdge(2, 1)
+                .AddEdge(2, 3)
+                .AddEdge(2, 4)
+                .Build();
+
+            NearestNeighbor.FindTour(graph);
+        }
+
+        [TestMethod]
+        public void TestTinyNearestNeighbor()
+        {
+            // Load complete graph with 10 verteces
+            Graph<int, double> graph = Factory.CreateGraphFromFile("./graphs/complete/K_10.txt", new DefaultGraphTextLineParser());
+
+            // Find route with double tree algorithm
+            IWeightedGraph<int, double> route = NearestNeighbor.FindTour(graph);
+
+            // Check result
+            Assert.AreEqual(10, route.VertexCount);
+            Assert.AreEqual(9, route.GetAllEdges().Count());
+        }
+
+        [TestMethod]
+        public void TestTinyDoubleTree()
+        {
+            // Load complete graph with 10 verteces
+            Graph<int, double> graph = Factory.CreateGraphFromFile("./graphs/complete/K_10.txt", new DefaultGraphTextLineParser());
+            
+            // Find route with double tree algorithm
             IWeightedGraph<int, double> route = DoubleTree.FindTour(graph);
-            Assert.AreEqual(5, route.VertexCount);
-            Assert.AreEqual(4, route.GetAllEdges().Count());
-            Assert.AreEqual(1.4, route.GetAllEdges().Sum(e => e.Weight));
+
+            // Check result
+            Assert.AreEqual(10, route.VertexCount);
+            Assert.AreEqual(9, route.GetAllEdges().Count());
         }
     }
 }
