@@ -38,6 +38,7 @@ namespace Graft.Algorithms.TravelingSalesmanProblem
                         throw new GraphNotCompleteException("The graph is not complete.", exception);
                     }
                 }
+                lastVertex = vertex;
             }
             // TODO: merge traversal of MSP and building of path for 1 less loop
 
