@@ -29,6 +29,15 @@
     <None Update="graphs\complete\K_10.txt">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
+    <None Update="graphs\complete\K_10e.txt">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="graphs\complete\K_12.txt">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="graphs\complete\K_12e.txt">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
     <None Update="graphs\Graph1.txt">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>

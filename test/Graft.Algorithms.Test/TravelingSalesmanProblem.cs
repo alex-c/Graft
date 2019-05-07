@@ -49,20 +49,34 @@ namespace Graft.Algorithms.Tests
         }
 
         [TestMethod]
-        public void TestTinyGraph()
+        public void TestTinyGraphs()
         {
-            Graph<int, double> graph = Factory.CreateGraphFromFile("./graphs/complete/K_10.txt", new DefaultGraphTextLineParser());
-            TestTspAlgorithms(graph, 10, 10, 38.41);
+            DefaultGraphTextLineParser parser = new DefaultGraphTextLineParser();
+            Graph<int, double> graph1 = Factory.CreateGraphFromFile("./graphs/complete/K_10.txt", parser);
+            Graph<int, double> graph2 = Factory.CreateGraphFromFile("./graphs/complete/K_10e.txt", parser);
+            TestTspAlgorithms(graph1, 10, 10, 38.41);
+            TestTspAlgorithms(graph2, 10, 10, 27.26);
+        }
+
+        [TestMethod]
+        public void TestSmallGraphs()
+        {
+            DefaultGraphTextLineParser parser = new DefaultGraphTextLineParser();
+            Graph<int, double> graph1 = Factory.CreateGraphFromFile("./graphs/complete/K_12.txt", parser);
+            Graph<int, double> graph2 = Factory.CreateGraphFromFile("./graphs/complete/K_12e.txt", parser);
+            TestTspAlgorithms(graph1, 12, 12, 45.19);
+            TestTspAlgorithms(graph2, 12, 12, 36.13);
         }
 
         private void TestTspAlgorithms(IWeightedGraph<int, double> graph,
             int expectedVerteces,
             int expectedEdges,
-            double optimalTourCosts = 0.0,
+            double optimalTourCosts = 38.41,
             double precision = 0.01)
         {
             TestTspAlgorithm(graph, TspAlgorithm.NearestNeighbor, expectedVerteces, expectedEdges, optimalTourCosts);
             TestTspAlgorithm(graph, TspAlgorithm.DoubleTree, expectedVerteces, expectedEdges, optimalTourCosts);
+            TestTspAlgorithm(graph, TspAlgorithm.BruteForce, expectedVerteces, expectedEdges, optimalTourCosts);
         }
 
         private void TestTspAlgorithm(IWeightedGraph<int, double> graph,
@@ -84,7 +98,7 @@ namespace Graft.Algorithms.Tests
                     tour = DoubleTree.FindTour(graph);
                     break;
                 case TspAlgorithm.BruteForce:
-                    tour = BruteForce.FindOptimalTour(graph, double.MaxValue);
+                    tour = BruteForce.FindOptimalTour(graph, 0.0, double.MaxValue, (w1, w2) => w1 + w2);
                     break;
                 default:
                     throw new NotSupportedException($"Testing TSP with the {algorithm} algorithm is currently not supported.");
