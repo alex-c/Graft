@@ -19,28 +19,23 @@ namespace Graft.Algorithms.TravelingSalesmanProblem
             // Find minimum spanning tree
             IWeightedGraph<TV, TW> msp = Kruskal.FindMinimumSpanningTree(graph);
 
-            // Get order of verteces in the MSP
-            HashSet<IVertex<TV>> vertexOrder = new HashSet<IVertex<TV>>();
-            DepthFirstSearch.Traverse(msp, v => vertexOrder.Add(v));
-
-            // Connect verteces in order
+            // Connect verteces in the order of the MSP
             IVertex<TV> lastVertex = null;
-            foreach (IVertex<TV> vertex in vertexOrder)
+            DepthFirstSearch.Traverse(msp, currentVertex =>
             {
                 if (lastVertex != null)
                 {
                     try
                     {
-                        builder.AddEdge(lastVertex.Value, vertex.Value, graph.GetEdgeBetweenVerteces(lastVertex.Value, vertex.Value).Weight);
+                        builder.AddEdge(lastVertex.Value, currentVertex.Value, graph.GetEdgeBetweenVerteces(lastVertex.Value, currentVertex.Value).Weight);
                     }
                     catch (VertecesNotConnectedException<TV> exception)
                     {
                         throw new GraphNotCompleteException("The graph is not complete.", exception);
                     }
                 }
-                lastVertex = vertex;
-            }
-            // TODO: merge traversal of MSP and building of path for 1 less loop
+                lastVertex = currentVertex;
+            });
 
             // Done!
             return builder.Build();
