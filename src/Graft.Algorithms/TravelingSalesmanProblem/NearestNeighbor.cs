@@ -14,7 +14,7 @@ namespace Graft.Algorithms.TravelingSalesmanProblem
             return FindTour(graph, graph.GetFirstVertex());
         }
 
-        // TODO: should the result graph connect to the source vertex again (= be a cycle)
+        // TODO: should the result graph connect to the source vertex again (= be a cycle)?
         public static IWeightedGraph<TV, TW> FindTour<TV, TW>(IWeightedGraph<TV, TW> graph, IVertex<TV> source) where TV : IEquatable<TV>
         {
             GraphBuilder<TV, TW> builder = new GraphBuilder<TV, TW>();

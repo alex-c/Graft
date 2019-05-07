@@ -39,6 +39,7 @@ namespace Graft.Algorithms.TravelingSalesmanProblem
                     }
                 }
             }
+            // TODO: merge traversal of MSP and building of path for 1 less loop
 
             // Done!
             return builder.Build();

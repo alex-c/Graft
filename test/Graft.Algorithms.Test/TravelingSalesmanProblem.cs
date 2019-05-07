@@ -7,7 +7,7 @@ using System.Linq;
 namespace Graft.Algorithms.Tests
 {
     [TestClass]
-    public class TravelingSalespersonProblem
+    public class TravelingSalesmanProblem
     {
         [TestMethod]
         public void TestSimpleNearestNeighbor()
