@@ -3,6 +3,7 @@ using Graft.Default;
 using Graft.Default.File;
 using Graft.Exceptions;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
+using System;
 using System.Linq;
 
 namespace Graft.Algorithms.Tests
@@ -48,31 +49,71 @@ namespace Graft.Algorithms.Tests
         }
 
         [TestMethod]
-        public void TestTinyNearestNeighbor()
+        public void TestTinyGraph()
         {
-            // Load complete graph with 10 verteces
             Graph<int, double> graph = Factory.CreateGraphFromFile("./graphs/complete/K_10.txt", new DefaultGraphTextLineParser());
-
-            // Find route with double tree algorithm
-            IWeightedGraph<int, double> route = NearestNeighbor.FindTour(graph);
-
-            // Check result
-            Assert.AreEqual(10, route.VertexCount);
-            Assert.AreEqual(10, route.GetAllEdges().Count());
+            TestTspAlgorithms(graph, 10, 10, 38.41);
         }
 
-        [TestMethod]
-        public void TestTinyDoubleTree()
+        private void TestTspAlgorithms(IWeightedGraph<int, double> graph,
+            int expectedVerteces,
+            int expectedEdges,
+            double optimalTourCosts = 0.0,
+            double precision = 0.01)
         {
-            // Load complete graph with 10 verteces
-            Graph<int, double> graph = Factory.CreateGraphFromFile("./graphs/complete/K_10.txt", new DefaultGraphTextLineParser());
-            
-            // Find route with double tree algorithm
-            IWeightedGraph<int, double> route = DoubleTree.FindTour(graph);
+            TestTspAlgorithm(graph, TspAlgorithm.NearestNeighbor, expectedVerteces, expectedEdges, optimalTourCosts);
+            TestTspAlgorithm(graph, TspAlgorithm.DoubleTree, expectedVerteces, expectedEdges, optimalTourCosts);
+        }
 
-            // Check result
-            Assert.AreEqual(10, route.VertexCount);
-            Assert.AreEqual(10, route.GetAllEdges().Count());
+        private void TestTspAlgorithm(IWeightedGraph<int, double> graph,
+            TspAlgorithm algorithm,
+            int expectedVerteces,
+            int expectedEdges,
+            double optimalTourCosts = 0.0,
+            double precision = 0.01)
+        {
+            IWeightedGraph<int, double> tour = null;
+
+            // Compute tour with the chosen algorithm
+            switch (algorithm)
+            {
+                case TspAlgorithm.NearestNeighbor:
+                    tour = NearestNeighbor.FindTour(graph);
+                    break;
+                case TspAlgorithm.DoubleTree:
+                    tour = DoubleTree.FindTour(graph);
+                    break;
+                case TspAlgorithm.BruteForce:
+                    tour = BruteForce.FindOptimalTour(graph, double.MaxValue);
+                    break;
+                default:
+                    throw new NotSupportedException($"Testing TSP with the {algorithm} algorithm is currently not supported.");
+            }
+
+            // Check route for component count
+            Assert.AreEqual(expectedVerteces, tour.VertexCount);
+            Assert.AreEqual(expectedEdges, tour.GetAllEdges().Count());
+
+            // For algorithms that find the optimal tour, check the optmial tour costs
+            if (algorithm == TspAlgorithm.BruteForce)
+            {
+                AssertDoublesNearlyEqual(optimalTourCosts, tour.GetAllEdges().Sum(e => e.Weight), precision);
+            }
+        }
+
+        private void AssertDoublesNearlyEqual(double expected, double actual, double precision)
+        {
+            if (actual < expected - precision || actual > expected + precision)
+            {
+                throw new AssertFailedException($"Doubles are not equal with a precision of {precision}. Expected {expected}, got {actual}.");
+            }
+        }
+
+        internal enum TspAlgorithm
+        {
+            NearestNeighbor,
+            DoubleTree,
+            BruteForce
         }
     }
 }
