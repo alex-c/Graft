@@ -55,6 +55,7 @@ namespace Graft.DataStructures
             Elements.Add(element, priority);
         }
 
+        // Should add the element if not present
         public void UpdatePriority(TE element, TP priority)
         {
             Elements[element] = priority;
