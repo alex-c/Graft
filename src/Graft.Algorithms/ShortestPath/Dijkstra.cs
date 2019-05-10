@@ -56,7 +56,7 @@ namespace Graft.Algorithms.ShortestPath
                     if (!visitedVerteces.Contains(targetVertex))
                     {
                         vertecesToVisit.UpdatePriority(targetVertex, edge.Weight);
-                        edgesToVerteces.Add(targetVertex, edge);
+                        edgesToVerteces[targetVertex] = edge;
                     }
                 }
             }
