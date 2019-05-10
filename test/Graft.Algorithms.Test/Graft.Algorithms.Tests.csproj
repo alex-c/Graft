@@ -56,6 +56,15 @@
     <None Update="graphs\Graph_gross.txt">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
+    <None Update="graphs\paths\Wege1.txt">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="graphs\paths\Wege2.txt">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="graphs\paths\Wege3.txt">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
     <None Update="graphs\weighted\G_100_200.txt">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
@@ -78,6 +87,7 @@
 
   <ItemGroup>
     <Folder Include="graphs\complete\" />
+    <Folder Include="graphs\paths\" />
   </ItemGroup>
 
 </Project>
