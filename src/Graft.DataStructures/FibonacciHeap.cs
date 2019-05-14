@@ -47,7 +47,7 @@ namespace Graft.DataStructures
             Count++;
         }
 
-        public TE ExtractMinimum()
+        public (TE, TP) ExtractMinimum()
         {
             if (Empty)
             {
@@ -100,7 +100,7 @@ namespace Graft.DataStructures
             Count--;
 
             // Done, return minimum
-            return minimumNode.Element;
+            return (minimumNode.Element, minimumNode.Priority);
         }
 
         public void DecreaseKey(TE element, TP priority)
@@ -217,7 +217,7 @@ namespace Graft.DataStructures
 
             // Extract
             node.Parent = null;
-            parent.Children = node.LeftSibling == null ? node.RightSibling : node.LeftSibling;
+            parent.Children = node.LeftSibling ?? node.RightSibling;
             if (node.LeftSibling != null)
             {
                 node.LeftSibling.RightSibling = node.RightSibling;

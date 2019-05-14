@@ -34,7 +34,7 @@ namespace Graft.DataStructures
             }
         }
 
-        public TE Dequeue()
+        public (TE, TP) Dequeue()
         {
             TE minElement = Elements.First().Key;
             TP minPriority = Elements.First().Value;
@@ -47,7 +47,7 @@ namespace Graft.DataStructures
                 }
             }
             Elements.Remove(minElement);
-            return minElement;
+            return (minElement, minPriority);
         }
 
         public void Enqueue(TE element, TP priority)

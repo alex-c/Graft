@@ -14,7 +14,7 @@ namespace Graft.DataStructures
 
         void Enqueue(TE element, TP priority);
 
-        TE Dequeue();
+        (TE, TP) Dequeue();
 
         void UpdatePriority(TE element, TP priority);
     }

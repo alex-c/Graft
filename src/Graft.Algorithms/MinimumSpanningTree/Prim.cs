@@ -53,7 +53,7 @@ namespace Graft.Algorithms.MinimumSpanningTree
             while (!vertexCosts.Empty)
             {
                 // Get and remove vertex with smallest cost
-                TV minCost = vertexCosts.Dequeue();
+                TV minCost = vertexCosts.Dequeue().Item1;
 
                 // For easier handling, get vertex and edge
                 IVertex<TV> vertex = vertexValue[minCost];

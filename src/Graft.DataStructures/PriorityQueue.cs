@@ -30,7 +30,7 @@ namespace Graft.DataStructures
             Heap.Insert(element, priority);
         }
 
-        public TE Dequeue()
+        public (TE, TP) Dequeue()
         {
             return Heap.ExtractMinimum();
         }

@@ -13,9 +13,11 @@ namespace Graft.DataStructures.Test
         [TestInitialize]
         public void SetUpQueueImplementations()
         {
-            QueueImplementations = new List<IPriorityQueue<IVertex<int>, double>>();
-            QueueImplementations.Add(new NaivePriorityQueue<IVertex<int>, double>());
-            QueueImplementations.Add(new PriorityQueue<IVertex<int>, double>());
+            QueueImplementations = new List<IPriorityQueue<IVertex<int>, double>>
+            {
+                new NaivePriorityQueue<IVertex<int>, double>(),
+                new PriorityQueue<IVertex<int>, double>()
+            };
         }
 
         [TestMethod]
@@ -56,15 +58,15 @@ namespace Graft.DataStructures.Test
                 queue.Enqueue(new Vertex<int>(5), 1.0);
 
                 // Dequeue and check first element
-                Assert.AreEqual(vertexToDequeue.Value, queue.Dequeue().Value);
+                Assert.AreEqual(vertexToDequeue.Value, queue.Dequeue().Item1.Value);
                 Assert.AreEqual(4, queue.Count);
                 Assert.AreEqual(false, queue.Contains(vertexToDequeue));
 
                 // Dequeue other elements
-                Assert.AreEqual(3, queue.Dequeue().Value);
-                Assert.AreEqual(1, queue.Dequeue().Value);
-                Assert.AreEqual(5, queue.Dequeue().Value);
-                Assert.AreEqual(4, queue.Dequeue().Value);
+                Assert.AreEqual(3, queue.Dequeue().Item1.Value);
+                Assert.AreEqual(1, queue.Dequeue().Item1.Value);
+                Assert.AreEqual(5, queue.Dequeue().Item1.Value);
+                Assert.AreEqual(4, queue.Dequeue().Item1.Value);
 
                 // Queue empty
                 Assert.AreEqual(true, queue.Empty);
@@ -85,7 +87,7 @@ namespace Graft.DataStructures.Test
                 queue.Enqueue(new Vertex<int>(5), 1.0);
 
                 queue.UpdatePriority(vertexToUpdatePriorityFor, 0.0);
-                Assert.AreEqual(vertexToUpdatePriorityFor.Value, queue.Dequeue().Value);
+                Assert.AreEqual(vertexToUpdatePriorityFor.Value, queue.Dequeue().Item1.Value);
             }
         }
     }
