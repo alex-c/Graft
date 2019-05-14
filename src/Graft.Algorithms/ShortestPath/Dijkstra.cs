@@ -9,9 +9,10 @@ namespace Graft.Algorithms.ShortestPath
 {
     public static class Dijkstra
     {
-        public static IWeightedGraph<TV, TW> FindShortestPath<TV, TW>(IWeightedGraph<TV, TW> graph, IVertex<TV> source, IVertex<TV> target)
-            where TV : IEquatable<TV>
-            where TW : IComparable
+        public static IWeightedGraph<TV, TW> FindShortestPath<TV, TW>(IWeightedGraph<TV, TW> graph,
+            IVertex<TV> source,
+            IVertex<TV> target,
+            TW zeroValue) where TV : IEquatable<TV> where TW : IComparable
         {
             HashSet<IVertex<TV>> visitedVerteces = new HashSet<IVertex<TV>>();
             IPriorityQueue<IVertex<TV>, TW> vertecesToVisit = new NaivePriorityQueue<IVertex<TV>, TW>();
@@ -52,6 +53,10 @@ namespace Graft.Algorithms.ShortestPath
                 // If not, discover the next verteces that can be visited 
                 foreach (IWeightedEdge<TV, TW> edge in graph.GetEdgesOfVertex(currentVertex))
                 {
+                    if (edge.Weight.CompareTo(zeroValue) < 0)
+                    {
+                        throw new NegativeEdgeWeightException();
+                    }
                     IVertex<TV> targetVertex = edge.ConnectedVertex(currentVertex);
                     if (!visitedVerteces.Contains(targetVertex))
                     {

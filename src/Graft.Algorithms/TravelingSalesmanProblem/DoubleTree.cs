@@ -4,7 +4,6 @@ using Graft.Default;
 using Graft.Exceptions;
 using Graft.Primitives;
 using System;
-using System.Collections.Generic;
 using System.Linq;
 
 namespace Graft.Algorithms.TravelingSalesmanProblem

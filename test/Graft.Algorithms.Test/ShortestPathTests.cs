@@ -1,12 +1,11 @@
 ﻿using Graft.Algorithms.ShortestPath;
 using Graft.Default;
 using Graft.Default.File;
+using Graft.Exceptions;
 using Graft.Primitives;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System;
-using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 
 namespace Graft.Algorithms.Tests
 {
@@ -38,25 +37,36 @@ namespace Graft.Algorithms.Tests
             Graph<int, double> graph = Factory.CreateGraphFromFile("./graphs/paths/Wege2.txt", Parser);
             IVertex<int> source = graph.GetFirstMatchingVertex(v => v.Value == 2);
             IVertex<int> target = graph.GetFirstMatchingVertex(v => v.Value == 0);
-            TestShortestPathsAlgorithms(graph, source, target, 2);
+            try
+            {
+                TestShortestPathsAlgorithm(graph, source, target, 2, ShortestPathAlgorithm.Dijkstra);
+            }
+            catch (NegativeEdgeWeightException) { /* Expected exception */ }
         }
 
         [TestMethod]
         public void TestShortestPath3()
         {
-            Graph<int, double> graph = Factory.CreateGraphFromFile("./graphs/paths/Wege1.txt", Parser);
+            Graph<int, double> graph = Factory.CreateGraphFromFile("./graphs/paths/Wege3.txt", Parser);
             IVertex<int> source = graph.GetFirstMatchingVertex(v => v.Value == 2);
             IVertex<int> target = graph.GetFirstMatchingVertex(v => v.Value == 0);
-            TestShortestPathsAlgorithms(graph, source, target, 6); // TODO this is wrong
+            TestShortestPathsAlgorithms(graph, source, target, 6); // TODO: graph contains a negative cycle...
         }
 
         [TestMethod]
         public void TestShortestPathForBigGraph()
         {
-            Graph<int, double> graph = Factory.CreateGraphFromFile("./graphs/weighted/G_1_2.txt", Parser);
-            IVertex<int> source = graph.GetFirstMatchingVertex(v => v.Value == 0);
-            IVertex<int> target = graph.GetFirstMatchingVertex(v => v.Value == 1);
-            TestShortestPathsAlgorithms(graph, source, target, 5.54417);
+            // Undirected graph
+            Graph<int, double> graphUnDirected = Factory.CreateGraphFromFile("./graphs/weighted/G_1_2.txt", Parser);
+            IVertex<int> source = graphUnDirected.GetFirstMatchingVertex(v => v.Value == 0);
+            IVertex<int> target = graphUnDirected.GetFirstMatchingVertex(v => v.Value == 1);
+            TestShortestPathsAlgorithms(graphUnDirected, source, target, 2.36796);
+
+            // Directed graph
+            Graph<int, double> graphDirected = Factory.CreateGraphFromFile("./graphs/weighted/G_1_2.txt", Parser, true);
+            source = graphDirected.GetFirstMatchingVertex(v => v.Value == 0);
+            target = graphDirected.GetFirstMatchingVertex(v => v.Value == 1);
+            TestShortestPathsAlgorithms(graphDirected, source, target, 5.54417);
         }
 
         private void TestShortestPathsAlgorithms(IWeightedGraph<int, double> graph, IVertex<int> source, IVertex<int> target, double pathCosts)
@@ -70,7 +80,7 @@ namespace Graft.Algorithms.Tests
             switch (algorithm)
             {
                 case ShortestPathAlgorithm.Dijkstra:
-                    shortestPath = Dijkstra.FindShortestPath(graph, source, target);
+                    shortestPath = Dijkstra.FindShortestPath(graph, source, target, 0.0);
                     break;
                 default:
                     throw new NotSupportedException($"Testing shortest path for the {algorithm} algorithm is currently not supported.");
