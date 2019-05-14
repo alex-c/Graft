@@ -12,33 +12,29 @@ namespace Graft.Algorithms.ShortestPath
         public static IWeightedGraph<TV, TW> FindShortestPath<TV, TW>(IWeightedGraph<TV, TW> graph,
             IVertex<TV> source,
             IVertex<TV> target,
-            TW zeroValue) where TV : IEquatable<TV> where TW : IComparable
+            TW zeroValue,
+            TW maxValue,
+            Func<TW, TW, TW> combineCosts) where TV : IEquatable<TV> where TW : IComparable
         {
             HashSet<IVertex<TV>> visitedVerteces = new HashSet<IVertex<TV>>();
             IPriorityQueue<IVertex<TV>, TW> vertecesToVisit = new NaivePriorityQueue<IVertex<TV>, TW>();
-            Dictionary<IVertex<TV>, IWeightedEdge<TV, TW>> edgesToVerteces = new Dictionary<IVertex<TV>, IWeightedEdge<TV, TW>>();
+            Dictionary<IVertex<TV>, IWeightedEdge<TV, TW>> predecessor = new Dictionary<IVertex<TV>, IWeightedEdge<TV, TW>>();
 
-            // Set starting vertex and first verteces to visit with costs
-            IVertex<TV> currentVertex = source;
-            foreach (IWeightedEdge<TV, TW> connectedEdge in graph.GetEdgesOfVertex(currentVertex))
+            // Initialize queue and predecessor map
+            foreach (IVertex<TV> vertex in graph.GetAllVerteces())
             {
-                IVertex<TV> connectedVertex = connectedEdge.ConnectedVertex(currentVertex);
-                if (!visitedVerteces.Contains(connectedVertex))
-                {
-                    if (!vertecesToVisit.Contains(connectedVertex) ||
-                        connectedEdge.Weight.CompareTo(vertecesToVisit.GetPriorityOf(connectedVertex)) < 0)
-                    {
-                        vertecesToVisit.UpdatePriority(connectedVertex, connectedEdge.Weight);
-                        edgesToVerteces[connectedVertex] = connectedEdge;
-                    }
-                }
+                vertecesToVisit.Enqueue(vertex, maxValue);
+                predecessor.Add(vertex, null);
             }
+            vertecesToVisit.UpdatePriority(source, zeroValue);
 
-            // Continue while there are verteces to visit
+            // Continue as long as there are verteces to visit
+            IVertex<TV> currentVertex = null;
+            TW currentCosts = zeroValue;
             while (!vertecesToVisit.Empty)
             {
                 // Get the closest next vertex
-                currentVertex = vertecesToVisit.Dequeue();
+                (currentVertex, currentCosts) = vertecesToVisit.Dequeue();
 
                 // Check whether we reached our target
                 if (currentVertex == target)
@@ -57,11 +53,12 @@ namespace Graft.Algorithms.ShortestPath
                     {
                         throw new NegativeEdgeWeightException();
                     }
-                    IVertex<TV> targetVertex = edge.ConnectedVertex(currentVertex);
-                    if (!visitedVerteces.Contains(targetVertex))
+                    IVertex<TV> connectedVertex = edge.ConnectedVertex(currentVertex);
+                    if (!visitedVerteces.Contains(connectedVertex))
                     {
-                        vertecesToVisit.UpdatePriority(targetVertex, edge.Weight);
-                        edgesToVerteces[targetVertex] = edge;
+                        TW newCosts = combineCosts(currentCosts, edge.Weight);
+                        vertecesToVisit.UpdatePriority(connectedVertex, newCosts);
+                        predecessor[connectedVertex] = edge;
                     }
                 }
             }
@@ -72,7 +69,7 @@ namespace Graft.Algorithms.ShortestPath
                 GraphBuilder<TV, TW> builder = new GraphBuilder<TV, TW>(true).AddVertex(target.Value);
                 while (currentVertex != source)
                 {
-                    IWeightedEdge<TV, TW> pathEdge = edgesToVerteces[currentVertex];
+                    IWeightedEdge<TV, TW> pathEdge = predecessor[currentVertex];
                     IVertex<TV> previousVertex = pathEdge.ConnectedVertex(currentVertex);
                     builder
                         .AddVertex(previousVertex.Value)

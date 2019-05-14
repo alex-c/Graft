@@ -106,7 +106,7 @@ namespace Graft.Algorithms.Tests
             switch (algorithm)
             {
                 case ShortestPathAlgorithm.Dijkstra:
-                    shortestPath = Dijkstra.FindShortestPath(graph, source, target, 0.0);
+                    shortestPath = Dijkstra.FindShortestPath(graph, source, target, 0.0, double.MaxValue, (x, y) => x + y);
                     break;
                 case ShortestPathAlgorithm.BellmanFordMoore:
                     shortestPath = BellmanFordMoore.FindShortestPath(graph, source, target, 0.0, double.MaxValue, (x, y) => x + y);
