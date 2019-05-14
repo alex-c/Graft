@@ -63,7 +63,7 @@ namespace Graft.Default
 
         public Graph<TV, TW> Build()
         {
-            return new Graph<TV, TW>(new HashSet<Vertex<TV>>(Verteces.Values), Edges);
+            return new Graph<TV, TW>(new HashSet<Vertex<TV>>(Verteces.Values), Edges, Directed);
         }
     }
 }

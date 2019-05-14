@@ -69,7 +69,7 @@ namespace Graft.Algorithms.ShortestPath
             // If we reached the target vertex, build result graph
             if (currentVertex == target)
             {
-                GraphBuilder<TV, TW> builder = new GraphBuilder<TV, TW>().AddVertex(target.Value);
+                GraphBuilder<TV, TW> builder = new GraphBuilder<TV, TW>(true).AddVertex(target.Value);
                 while (currentVertex != source)
                 {
                     IWeightedEdge<TV, TW> pathEdge = edgesToVerteces[currentVertex];

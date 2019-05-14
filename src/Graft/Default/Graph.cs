@@ -23,6 +23,7 @@ namespace Graft.Default
             Verteces = verteces;
             Adjacency = adjacency;
             VertexCount = verteces.Count;
+            IsDirected = isDirected;
         }
 
         #region Vertex access
