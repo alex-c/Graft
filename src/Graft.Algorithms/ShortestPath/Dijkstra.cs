@@ -57,8 +57,11 @@ namespace Graft.Algorithms.ShortestPath
                     if (!visitedVerteces.Contains(connectedVertex))
                     {
                         TW newCosts = combineCosts(currentCosts, edge.Weight);
-                        vertecesToVisit.UpdatePriority(connectedVertex, newCosts);
-                        predecessor[connectedVertex] = edge;
+                        if (newCosts.CompareTo(vertecesToVisit.GetPriorityOf(connectedVertex)) < 0)
+                        {
+                            vertecesToVisit.UpdatePriority(connectedVertex, newCosts);
+                            predecessor[connectedVertex] = edge;
+                        }
                     }
                 }
             }
