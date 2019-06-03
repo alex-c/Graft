@@ -27,7 +27,7 @@ namespace Graft.Algorithms.Tests
             IVertex<int> source = graph.GetFirstMatchingVertex(v => v.Value == 0);
             IVertex<int> target = graph.GetFirstMatchingVertex(v => v.Value == 7);
             IWeightedGraph<int, double> maxFlow = EdmondsKarp.FindMaxFlow(graph, source, target);
-            double maxFlowValue = maxFlow.GetAllEdges().Sum(e => e.Weight);
+            double maxFlowValue = GetMaxFlowValue(maxFlow, source.Value);
             Assert.AreEqual(4, maxFlowValue);
         }
 
@@ -38,7 +38,7 @@ namespace Graft.Algorithms.Tests
             IVertex<int> source = graph.GetFirstMatchingVertex(v => v.Value == 0);
             IVertex<int> target = graph.GetFirstMatchingVertex(v => v.Value == 7);
             IWeightedGraph<int, double> maxFlow = EdmondsKarp.FindMaxFlow(graph, source, target);
-            double maxFlowValue = maxFlow.GetAllEdges().Sum(e => e.Weight);
+            double maxFlowValue = GetMaxFlowValue(maxFlow, source.Value);
             Assert.AreEqual(5, maxFlowValue);
         }
 
@@ -49,7 +49,7 @@ namespace Graft.Algorithms.Tests
             IVertex<int> source = graph.GetFirstMatchingVertex(v => v.Value == 0);
             IVertex<int> target = graph.GetFirstMatchingVertex(v => v.Value == 7);
             IWeightedGraph<int, double> maxFlow = EdmondsKarp.FindMaxFlow(graph, source, target);
-            double maxFlowValue = maxFlow.GetAllEdges().Sum(e => e.Weight);
+            double maxFlowValue = GetMaxFlowValue(maxFlow, source.Value);
             AssertDoublesNearlyEqual(0.735802, maxFlowValue, 0.000001);
         }
 
@@ -64,6 +64,14 @@ namespace Graft.Algorithms.Tests
             {
                 throw new AssertFailedException($"Doubles are not equal with a precision of {precision}. Expected {expected}, got {actual}.");
             }
+        }
+
+        private double GetMaxFlowValue(IWeightedGraph<int, double> flow, int sourceValue)
+        {
+            IVertex<int> source = flow.GetFirstMatchingVertex(v => v.Value == sourceValue);
+            return flow.GetEdgesOfVertex(source)
+                .Where(e => ((IWeightedDirectedEdge<int, double>)e).OriginVertex == source)
+                .Sum(e => e.Weight);
         }
     }
 }
