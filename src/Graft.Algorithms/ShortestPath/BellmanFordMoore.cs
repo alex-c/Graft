@@ -29,7 +29,7 @@ namespace Graft.Algorithms.ShortestPath
 
             // Relax edges repeatedly
             IEnumerable<IWeightedEdge<TV, TW>> edges = graph.GetAllEdges();
-            for (int i = 0; i < graph.VertexCount; i++)
+            for (int i = 0; i < graph.VertexCount - 1; i++)
             {
                 foreach (IWeightedEdge<TV, TW> edge in edges)
                 {

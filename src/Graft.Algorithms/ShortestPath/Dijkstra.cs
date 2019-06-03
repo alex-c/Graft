@@ -41,10 +41,7 @@ namespace Graft.Algorithms.ShortestPath
                 {
                     break;
                 }
-                else
-                {
-                    visitedVerteces.Add(currentVertex);
-                }
+                visitedVerteces.Add(currentVertex);
 
                 // If not, discover the next verteces that can be visited 
                 foreach (IWeightedEdge<TV, TW> edge in graph.GetEdgesOfVertex(currentVertex))
