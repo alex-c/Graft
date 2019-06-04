@@ -15,12 +15,13 @@ namespace Graft.Algorithms.MaxFlow
             IVertex<TV> source,
             IVertex<TV> target,
             Func<TW, TW, TW> combineFlowValues,
-            Func<TW, TW, TW> substractFlowValues) where TV : IEquatable<TV> where TW : IComparable
+            Func<TW, TW, TW> substractFlowValues,
+            TW zeroValue) where TV : IEquatable<TV> where TW : IComparable
         {
             // Set initial flow to 0
             foreach (IWeightedEdge<TV, TW> edge in graph.GetAllEdges())
             {
-                edge.SetAttribute(ATTR_FLOW, 0);
+                edge.SetAttribute(ATTR_FLOW, zeroValue);
             }
 
             // Augment flow until there are not augmenting paths in the residual graph left
@@ -29,7 +30,7 @@ namespace Graft.Algorithms.MaxFlow
             do
             {
                 // Build residual graph
-                residualGraph = BuildResidualGraph(graph, substractFlowValues);
+                residualGraph = BuildResidualGraph(graph, substractFlowValues, zeroValue);
 
                 // Find (s,t)-path in residual graph
                 if (TryFindPath(residualGraph, source, target, out List<IWeightedEdge<TV, TW>> path))
@@ -75,10 +76,16 @@ namespace Graft.Algorithms.MaxFlow
         }
 
         private static IWeightedGraph<TV, TW> BuildResidualGraph<TV, TW>(IWeightedGraph<TV, TW> graph,
-            Func<TW, TW, TW> substractFlowValues) where TV : IEquatable<TV> where TW : IComparable
+            Func<TW, TW, TW> substractFlowValues,
+            TW zeroValue) where TV : IEquatable<TV> where TW : IComparable
         {
-            GraphBuilder<TV, TW> builder = new GraphBuilder<TV, TW>(true)
-                .AddVerteces(graph.GetAllVerteces().Select(v => v.Value));
+            Dictionary<TV, Vertex<TV>> verteces = new Dictionary<TV, Vertex<TV>>();
+            foreach (var vertex in graph.GetAllVerteces())
+            {
+                verteces.Add(vertex.Value, new Vertex<TV>(vertex.Value));
+            }
+
+            GraphBuilder<TV, TW> builder = new GraphBuilder<TV, TW>(true).AddVerteces(verteces.Values);
 
             foreach (IWeightedEdge<TV, TW> edge in graph.GetAllEdges())
             {
@@ -87,13 +94,24 @@ namespace Graft.Algorithms.MaxFlow
                 TW maxFlow = directedEdge.Weight;
                 TW residualFlow = substractFlowValues(maxFlow, currentFlow);
 
-                // TODO: add direction attribute to edges
+                // Add forward edge with residual flow value as capacity
+                if (residualFlow.CompareTo(zeroValue) > 0)
+                {
+                    Edge<TV, TW> forwardEdge = new Edge<TV, TW>(verteces[directedEdge.OriginVertex.Value],
+                        verteces[directedEdge.TargetVertex.Value],
+                        residualFlow);
+                    forwardEdge.SetAttribute(ATTR_DIRECTION, EdgeDirection.Forward);
+                    builder.AddEdge(forwardEdge);
+                }
 
-                // if residual flow > 0
-                builder.AddEdge(directedEdge.OriginVertex.Value, directedEdge.TargetVertex.Value, residualFlow);
-
-                // if current flow > 0
-                builder.AddEdge(directedEdge.TargetVertex.Value, directedEdge.OriginVertex.Value, currentFlow);
+                // Add backward edge with current flow as capacity
+                if (currentFlow.CompareTo(zeroValue) > 0)
+                {
+                    Edge<TV, TW> backwardEdge = new Edge<TV, TW>(verteces[directedEdge.TargetVertex.Value],
+                        verteces[directedEdge.OriginVertex.Value], currentFlow);
+                    backwardEdge.SetAttribute(ATTR_DIRECTION, EdgeDirection.Backward);
+                    builder.AddEdge(backwardEdge);
+                }
             }
 
             return builder.Build();

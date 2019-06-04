@@ -31,7 +31,7 @@ namespace Graft.Algorithms.Tests
             IWeightedGraph<int, double> graph = LoadGraphFromFile("./graphs/max_flow/Fluss.txt");
             IVertex<int> source = graph.GetFirstMatchingVertex(v => v.Value == 0);
             IVertex<int> target = graph.GetFirstMatchingVertex(v => v.Value == 7);
-            IWeightedGraph<int, double> maxFlow = EdmondsKarp.FindMaxFlow(graph, source, target, CombineFlowValues, SubstractFlowValues);
+            IWeightedGraph<int, double> maxFlow = EdmondsKarp.FindMaxFlow(graph, source, target, CombineFlowValues, SubstractFlowValues, 0.0);
             double maxFlowValue = GetMaxFlowValue(maxFlow, source.Value);
             Assert.AreEqual(4, maxFlowValue);
         }
@@ -42,7 +42,7 @@ namespace Graft.Algorithms.Tests
             IWeightedGraph<int, double> graph = LoadGraphFromFile("./graphs/max_flow/Fluss2.txt");
             IVertex<int> source = graph.GetFirstMatchingVertex(v => v.Value == 0);
             IVertex<int> target = graph.GetFirstMatchingVertex(v => v.Value == 7);
-            IWeightedGraph<int, double> maxFlow = EdmondsKarp.FindMaxFlow(graph, source, target, CombineFlowValues, SubstractFlowValues);
+            IWeightedGraph<int, double> maxFlow = EdmondsKarp.FindMaxFlow(graph, source, target, CombineFlowValues, SubstractFlowValues, 0.0);
             double maxFlowValue = GetMaxFlowValue(maxFlow, source.Value);
             Assert.AreEqual(5, maxFlowValue);
         }
@@ -53,7 +53,7 @@ namespace Graft.Algorithms.Tests
             IWeightedGraph<int, double> graph = LoadGraphFromFile("./graphs/weighted/G_1_2.txt");
             IVertex<int> source = graph.GetFirstMatchingVertex(v => v.Value == 0);
             IVertex<int> target = graph.GetFirstMatchingVertex(v => v.Value == 7);
-            IWeightedGraph<int, double> maxFlow = EdmondsKarp.FindMaxFlow(graph, source, target, CombineFlowValues, SubstractFlowValues);
+            IWeightedGraph<int, double> maxFlow = EdmondsKarp.FindMaxFlow(graph, source, target, CombineFlowValues, SubstractFlowValues, 0.0);
             double maxFlowValue = GetMaxFlowValue(maxFlow, source.Value);
             AssertDoublesNearlyEqual(0.735802, maxFlowValue, 0.000001);
         }
