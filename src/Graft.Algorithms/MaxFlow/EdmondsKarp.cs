@@ -1,4 +1,5 @@
-﻿using Graft.Primitives;
+﻿using Graft.Default;
+using Graft.Primitives;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -12,7 +13,9 @@ namespace Graft.Algorithms.MaxFlow
 
         public static IWeightedGraph<TV, TW> FindMaxFlow<TV, TW>(IWeightedGraph<TV, TW> graph,
             IVertex<TV> source,
-            IVertex<TV> target) where TV : IEquatable<TV>
+            IVertex<TV> target,
+            Func<TW, TW, TW> combineFlowValues,
+            Func<TW, TW, TW> substractFlowValues) where TV : IEquatable<TV>
         {
             // Set initial flow to 0
             foreach (IWeightedEdge<TV, TW> edge in graph.GetAllEdges())
@@ -29,17 +32,25 @@ namespace Graft.Algorithms.MaxFlow
                 residualGraph = BuildResidualGraph(graph);
 
                 // Find (s,t)-path in residual graph
-                if (TryFindPath(residualGraph, out IEnumerable<IWeightedDirectedEdge<TV, TW>> path))
+                if (TryFindPath(residualGraph, source, target, out IEnumerable<IWeightedDirectedEdge<TV, TW>> path))
                 {
                     // Augment f according to the found path
-                    TW augmentingFlow = path.Min(e => e.Weight);
+                    TW augmentingFlowValue = path.Min(e => e.Weight);
                     foreach (IWeightedDirectedEdge<TV, TW> edge in path)
                     {
-                        if ((string)edge.GetAttribute("direction") == "forward")
+                        // Get current flow of edge
+                        IWeightedDirectedEdge<TV, TW> graphEdge = (IWeightedDirectedEdge<TV, TW>)
+                            graph.GetEdgeBetweenVerteces(edge.OriginVertex, edge.TargetVertex);
+                        TW currentFlow = (TW)graphEdge.GetAttribute(ATTR_FLOW);
+
+                        // Add or substract augmenting flow value from current value depending on edge direction
+                        if (graphEdge.GetAttribute<EdgeDirection>(ATTR_DIRECTION) == EdgeDirection.Forward)
                         {
-                            IWeightedDirectedEdge<TV, TW> graphEdge = (IWeightedDirectedEdge<TV, TW>)
-                                graph.GetEdgeBetweenVerteces(edge.OriginVertex, edge.TargetVertex);
-                            graphEdge.SetAttribute(ATTR_FLOW, (TW)graphEdge.GetAttribute(ATTR_FLOW) + augmentingFlow); // TODO: introduce combination function
+                            graphEdge.SetAttribute(ATTR_FLOW, combineFlowValues(currentFlow, augmentingFlowValue));
+                        }
+                        else
+                        {
+                            graphEdge.SetAttribute(ATTR_FLOW, substractFlowValues(currentFlow, augmentingFlowValue));
                         }
                     }
                 }
@@ -50,8 +61,17 @@ namespace Graft.Algorithms.MaxFlow
                 }
             } while (anyPathLeft);
 
-            // TODO: think about return type...
-            throw new NotImplementedException("TODO: implement this!");
+            // Build copy of input graph with max flow as edge weight
+            GraphBuilder<TV, TW> builder = new GraphBuilder<TV, TW>(true)
+                .AddVerteces(graph.GetAllVerteces().Select(v => v.Value));
+            foreach (IWeightedEdge<TV, TW> edge in graph.GetAllEdges())
+            {
+                IWeightedDirectedEdge<TV, TW> graphEdge = (IWeightedDirectedEdge<TV, TW>)edge;
+                builder.AddEdge(graphEdge.OriginVertex.Value,
+                    graphEdge.TargetVertex.Value,
+                    graphEdge.GetAttribute<TW>(ATTR_FLOW));
+            }
+            return builder.Build();
         }
 
         public static IWeightedGraph<TV, TW> BuildResidualGraph<TV, TW>(IWeightedGraph<TV, TW> graph) where TV : IEquatable<TV>
@@ -61,10 +81,18 @@ namespace Graft.Algorithms.MaxFlow
         }
 
         public static bool TryFindPath<TV, TW>(IWeightedGraph<TV, TW> graph,
+            IVertex<TV> source,
+            IVertex<TV> target,
             out IEnumerable<IWeightedDirectedEdge<TV, TW>> path) where TV : IEquatable<TV>
         {
             // TODO: implement TryFindPath
             throw new NotImplementedException("TODO: implement this!");
+        }
+
+        private enum EdgeDirection
+        {
+            Forward,
+            Backward
         }
     }
 }
