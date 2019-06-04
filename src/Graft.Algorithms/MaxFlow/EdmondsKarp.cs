@@ -15,7 +15,7 @@ namespace Graft.Algorithms.MaxFlow
             IVertex<TV> source,
             IVertex<TV> target,
             Func<TW, TW, TW> combineFlowValues,
-            Func<TW, TW, TW> substractFlowValues) where TV : IEquatable<TV>
+            Func<TW, TW, TW> substractFlowValues) where TV : IEquatable<TV> where TW : IComparable
         {
             // Set initial flow to 0
             foreach (IWeightedEdge<TV, TW> edge in graph.GetAllEdges())
@@ -29,7 +29,7 @@ namespace Graft.Algorithms.MaxFlow
             do
             {
                 // Build residual graph
-                residualGraph = BuildResidualGraph(graph);
+                residualGraph = BuildResidualGraph(graph, substractFlowValues);
 
                 // Find (s,t)-path in residual graph
                 if (TryFindPath(residualGraph, source, target, out List<IWeightedEdge<TV, TW>> path))
@@ -74,10 +74,29 @@ namespace Graft.Algorithms.MaxFlow
             return builder.Build();
         }
 
-        private static IWeightedGraph<TV, TW> BuildResidualGraph<TV, TW>(IWeightedGraph<TV, TW> graph) where TV : IEquatable<TV>
+        private static IWeightedGraph<TV, TW> BuildResidualGraph<TV, TW>(IWeightedGraph<TV, TW> graph,
+            Func<TW, TW, TW> substractFlowValues) where TV : IEquatable<TV> where TW : IComparable
         {
-            // TODO: implement BuildResidualGraph
-            throw new NotImplementedException("TODO: implement this!");
+            GraphBuilder<TV, TW> builder = new GraphBuilder<TV, TW>(true)
+                .AddVerteces(graph.GetAllVerteces().Select(v => v.Value));
+
+            foreach (IWeightedEdge<TV, TW> edge in graph.GetAllEdges())
+            {
+                IWeightedDirectedEdge<TV, TW> directedEdge = (IWeightedDirectedEdge<TV, TW>)edge;
+                TW currentFlow = directedEdge.GetAttribute<TW>(ATTR_FLOW);
+                TW maxFlow = directedEdge.Weight;
+                TW residualFlow = substractFlowValues(maxFlow, currentFlow);
+
+                // TODO: add direction attribute to edges
+
+                // if residual flow > 0
+                builder.AddEdge(directedEdge.OriginVertex.Value, directedEdge.TargetVertex.Value, residualFlow);
+
+                // if current flow > 0
+                builder.AddEdge(directedEdge.TargetVertex.Value, directedEdge.OriginVertex.Value, currentFlow);
+            }
+
+            return builder.Build();
         }
 
         private static bool TryFindPath<TV, TW>(IWeightedGraph<TV, TW> graph,
