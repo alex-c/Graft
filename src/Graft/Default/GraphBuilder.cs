@@ -25,11 +25,31 @@ namespace Graft.Default
             return this;
         }
 
+        public GraphBuilder<TV, TW> AddVertex(Vertex<TV> vertex)
+        {
+            if (Verteces.ContainsKey(vertex.Value))
+            {
+                throw new InvalidOperationException($"A vertex with value {vertex.Value} has already been added to this graph.");
+            }
+            Verteces[vertex.Value] = vertex;
+            Edges[vertex.Value] = new HashSet<Edge<TV, TW>>();
+            return this;
+        }
+
         public GraphBuilder<TV, TW> AddVerteces(IEnumerable<TV> vertexValues)
         {
             foreach (TV vertexValue in vertexValues)
             {
                 AddVertex(vertexValue);
+            }
+            return this;
+        }
+
+        public GraphBuilder<TV, TW> AddVerteces(IEnumerable<Vertex<TV>> verteces)
+        {
+            foreach (Vertex<TV> vertex in verteces)
+            {
+                AddVertex(vertex);
             }
             return this;
         }
@@ -52,6 +72,23 @@ namespace Graft.Default
                 if (!Directed)
                 {
                     Edges[targetVertexValue].Add(newEdge);
+                }
+            }
+            else
+            {
+                throw new InvalidOperationException($"One or more of the passed verteces are not verteces of this graph.");
+            }
+            return this;
+        }
+
+        public GraphBuilder<TV, TW> AddEdge(Edge<TV, TW> edge)
+        {
+            if (Verteces.ContainsKey(edge.OriginVertex.Value) && Verteces.ContainsKey(edge.TargetVertex.Value))
+            {
+                Edges[edge.OriginVertex.Value].Add(edge);
+                if (!Directed)
+                {
+                    Edges[edge.TargetVertex.Value].Add(edge);
                 }
             }
             else
