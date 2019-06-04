@@ -32,7 +32,7 @@ namespace Graft.Algorithms.MaxFlow
                 residualGraph = BuildResidualGraph(graph);
 
                 // Find (s,t)-path in residual graph
-                if (TryFindPath(residualGraph, source, target, out IEnumerable<IWeightedDirectedEdge<TV, TW>> path))
+                if (TryFindPath(residualGraph, source, target, out List<IWeightedEdge<TV, TW>> path))
                 {
                     // Augment f according to the found path
                     TW augmentingFlowValue = path.Min(e => e.Weight);
@@ -74,19 +74,60 @@ namespace Graft.Algorithms.MaxFlow
             return builder.Build();
         }
 
-        public static IWeightedGraph<TV, TW> BuildResidualGraph<TV, TW>(IWeightedGraph<TV, TW> graph) where TV : IEquatable<TV>
+        private static IWeightedGraph<TV, TW> BuildResidualGraph<TV, TW>(IWeightedGraph<TV, TW> graph) where TV : IEquatable<TV>
         {
             // TODO: implement BuildResidualGraph
             throw new NotImplementedException("TODO: implement this!");
         }
 
-        public static bool TryFindPath<TV, TW>(IWeightedGraph<TV, TW> graph,
+        private static bool TryFindPath<TV, TW>(IWeightedGraph<TV, TW> graph,
             IVertex<TV> source,
             IVertex<TV> target,
-            out IEnumerable<IWeightedDirectedEdge<TV, TW>> path) where TV : IEquatable<TV>
+            out List<IWeightedEdge<TV, TW>> path) where TV : IEquatable<TV>
         {
-            // TODO: implement TryFindPath
-            throw new NotImplementedException("TODO: implement this!");
+            Queue<IVertex<TV>> verteces = new Queue<IVertex<TV>>();
+            HashSet<IVertex<TV>> visited = new HashSet<IVertex<TV>>();
+            Dictionary<IVertex<TV>, IVertex<TV>> predecessors = new Dictionary<IVertex<TV>, IVertex<TV>>();
+            path = null;
+
+            // Starting vertex
+            verteces.Enqueue(source);
+            visited.Add(source);
+
+            // Traverse graph
+            while (verteces.Any())
+            {
+                // Get next vertex to visit
+                IVertex<TV> vertex = verteces.Dequeue();
+
+                // Check whether the target vertex was reached
+                if (vertex == target)
+                {
+                    path = new List<IWeightedEdge<TV, TW>>();
+                    while (vertex != source)
+                    {
+                        IVertex<TV> predecessor = predecessors[vertex];
+                        path.Add(graph.GetEdgeBetweenVerteces(predecessor, vertex));
+                        vertex = predecessor;
+                    }
+                    path.Reverse();
+                    return true;
+                }
+
+                // Enqueue adjacent verteces that have not been visited yet
+                foreach (IVertex<TV> adjacentVertex in graph.GetAdjacentVerteces(vertex))
+                {
+                    if (!visited.Contains(adjacentVertex))
+                    {
+                        verteces.Enqueue(adjacentVertex);
+                        visited.Add(adjacentVertex);
+                        predecessors.Add(adjacentVertex, vertex);
+                    }
+                }
+            }
+
+            // No path found!
+            return false;
         }
 
         private enum EdgeDirection
