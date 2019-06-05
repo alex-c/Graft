@@ -81,7 +81,7 @@ namespace Graft.Default
             }
             else
             {
-                throw new KeyNotFoundException($"There is no attribute '{attribute}' set on this vertex.");
+                throw new KeyNotFoundException($"There is no attribute '{attribute}' set on this edge.");
             }
         }
 

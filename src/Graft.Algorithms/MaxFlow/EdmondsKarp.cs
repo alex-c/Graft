@@ -33,24 +33,27 @@ namespace Graft.Algorithms.MaxFlow
                 residualGraph = BuildResidualGraph(graph, substractFlowValues, zeroValue);
 
                 // Find (s,t)-path in residual graph
-                if (TryFindPath(residualGraph, source, target, out List<IWeightedEdge<TV, TW>> path))
+                IVertex<TV> residualSource = residualGraph.GetFirstMatchingVertex(v => v.Value.Equals(source.Value));
+                IVertex<TV> residualTarget = residualGraph.GetFirstMatchingVertex(v => v.Value.Equals(target.Value));
+                if (TryFindPath(residualGraph, residualSource, residualTarget, out List<IWeightedEdge<TV, TW>> path))
                 {
                     // Augment f according to the found path
                     TW augmentingFlowValue = path.Min(e => e.Weight);
                     foreach (IWeightedDirectedEdge<TV, TW> edge in path)
                     {
-                        // Get current flow of edge
-                        IWeightedDirectedEdge<TV, TW> graphEdge = (IWeightedDirectedEdge<TV, TW>)
-                            graph.GetEdgeBetweenVerteces(edge.OriginVertex, edge.TargetVertex);
-                        TW currentFlow = (TW)graphEdge.GetAttribute(ATTR_FLOW);
-
                         // Add or substract augmenting flow value from current value depending on edge direction
-                        if (graphEdge.GetAttribute<EdgeDirection>(ATTR_DIRECTION) == EdgeDirection.Forward)
+                        if (edge.GetAttribute<EdgeDirection>(ATTR_DIRECTION) == EdgeDirection.Forward)
                         {
+                            IWeightedDirectedEdge<TV, TW> graphEdge = (IWeightedDirectedEdge<TV, TW>)
+                                graph.GetEdgeBetweenVerteces(edge.OriginVertex.Value, edge.TargetVertex.Value);
+                            TW currentFlow = graphEdge.GetAttribute<TW>(ATTR_FLOW);
                             graphEdge.SetAttribute(ATTR_FLOW, combineFlowValues(currentFlow, augmentingFlowValue));
                         }
                         else
                         {
+                            IWeightedDirectedEdge<TV, TW> graphEdge = (IWeightedDirectedEdge<TV, TW>)
+                                graph.GetEdgeBetweenVerteces(edge.TargetVertex.Value, edge.OriginVertex.Value);
+                            TW currentFlow = graphEdge.GetAttribute<TW>(ATTR_FLOW);
                             graphEdge.SetAttribute(ATTR_FLOW, substractFlowValues(currentFlow, augmentingFlowValue));
                         }
                     }
@@ -120,7 +123,7 @@ namespace Graft.Algorithms.MaxFlow
         private static bool TryFindPath<TV, TW>(IWeightedGraph<TV, TW> graph,
             IVertex<TV> source,
             IVertex<TV> target,
-            out List<IWeightedEdge<TV, TW>> path) where TV : IEquatable<TV>
+            out List<IWeightedEdge<TV, TW>> path) where TV : IEquatable<TV> where TW : IComparable
         {
             Queue<IVertex<TV>> verteces = new Queue<IVertex<TV>>();
             HashSet<IVertex<TV>> visited = new HashSet<IVertex<TV>>();
