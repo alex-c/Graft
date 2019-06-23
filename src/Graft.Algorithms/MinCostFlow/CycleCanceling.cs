@@ -1,9 +1,7 @@
 ﻿using Graft.Primitives;
 using System;
-using System.Collections.Generic;
-using System.Text;
 
-namespace Graft.Algorithms.MinFlow
+namespace Graft.Algorithms.MinCostFlow
 {
     public static class CycleCanceling
     {
