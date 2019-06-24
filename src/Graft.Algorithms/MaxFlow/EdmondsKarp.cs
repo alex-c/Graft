@@ -78,7 +78,7 @@ namespace Graft.Algorithms.MaxFlow
             return builder.Build();
         }
 
-        private static IWeightedGraph<TV, TW> BuildResidualGraph<TV, TW>(IWeightedGraph<TV, TW> graph,
+        public static IWeightedGraph<TV, TW> BuildResidualGraph<TV, TW>(IWeightedGraph<TV, TW> graph,
             Func<TW, TW, TW> substractFlowValues,
             TW zeroValue) where TV : IEquatable<TV> where TW : IComparable
         {
@@ -170,7 +170,7 @@ namespace Graft.Algorithms.MaxFlow
             return false;
         }
 
-        private enum EdgeDirection
+        public enum EdgeDirection
         {
             Forward,
             Backward

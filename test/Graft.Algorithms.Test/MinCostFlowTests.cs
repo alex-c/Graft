@@ -66,7 +66,8 @@ namespace Graft.Algorithms.Tests
                 (v1, v2) => v1 + v2,
                 (v1, v2) => v1 - v2,
                 v => v * -1,
-                0.0);
+                0.0,
+                double.MaxValue);
         }
 
         private double ComputeCosts(IWeightedGraph<int, double> graph)
@@ -74,7 +75,7 @@ namespace Graft.Algorithms.Tests
             double costs = 0.0;
             foreach (Primitives.IWeightedEdge<int, double> edge in graph.GetAllEdges())
             {
-                costs += edge.GetAttribute<double>(Constants.FLOW) + edge.GetAttribute<double>(Constants.COSTS);
+                costs += edge.GetAttribute<double>(Constants.FLOW) * edge.GetAttribute<double>(Constants.COSTS);
             }
             return costs;
         }
