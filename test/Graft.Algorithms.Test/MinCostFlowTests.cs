@@ -45,7 +45,7 @@ namespace Graft.Algorithms.Tests
         [ExpectedException(typeof(NoBFlowException))]
         public void TestFailingSmallGraph()
         {
-            Graph<int, double> graph = Graphs["Kostenminimal1"];
+            Graph<int, double> graph = Graphs["Kostenminimal2"];
             FindCostMinimalFlow(graph);
         }
 
