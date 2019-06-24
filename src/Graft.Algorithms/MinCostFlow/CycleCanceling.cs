@@ -83,7 +83,7 @@ namespace Graft.Algorithms.MinCostFlow
             // Add edges from super source and to super target
             foreach (IVertex<TV> source in sources)
             {
-                builder.AddEdge(superSourceValue, superTargetValue, source.GetAttribute<TW>(Constants.BALANCE));
+                builder.AddEdge(superSourceValue, source.Value, source.GetAttribute<TW>(Constants.BALANCE));
             }
             foreach (IVertex<TV> target in targets)
             {
