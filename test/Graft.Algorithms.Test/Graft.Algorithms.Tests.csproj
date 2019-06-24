@@ -22,6 +22,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\..\src\Graft.Algorithms\Graft.Algorithms.csproj" />
+    <ProjectReference Include="..\..\src\Graft.BalanceGraph\Graft.BalanceGraph.csproj" />
     <ProjectReference Include="..\..\src\Graft\Graft.csproj" />
   </ItemGroup>
 
@@ -60,6 +61,21 @@
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
     <None Update="graphs\max_flow\Fluss2.txt">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="graphs\min_cost_flow\Kostenminimal1.txt">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="graphs\min_cost_flow\Kostenminimal2.txt">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="graphs\min_cost_flow\Kostenminimal3.txt">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="graphs\min_cost_flow\Kostenminimal4.txt">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="graphs\min_cost_flow\Kostenminimal5.txt">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
     <None Update="graphs\paths\Wege1.txt">

@@ -98,6 +98,15 @@ namespace Graft.Default
             return this;
         }
 
+        public GraphBuilder<TV, TW> AddEdges(IEnumerable<Edge<TV, TW>> edges)
+        {
+            foreach (Edge<TV, TW> edge in edges)
+            {
+                AddEdge(edge);
+            }
+            return this;
+        }
+
         public Graph<TV, TW> Build()
         {
             return new Graph<TV, TW>(new HashSet<Vertex<TV>>(Verteces.Values), Edges, Directed);

@@ -26,7 +26,9 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Graft.Labs.Utilities", "lab
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Graft.DataStructures.Test", "test\Graft.DataStructures.Test\Graft.DataStructures.Test.csproj", "{9C37715C-AF40-474C-94A7-13EDD4ACCD7E}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Graft.Labs.TravelingSalesmanProblem", "labs\Graft.Labs.TravelingSalesmanProblem\Graft.Labs.TravelingSalesmanProblem.csproj", "{45EFB9A7-EABC-4BE7-A7DE-135B25CE7F9C}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Graft.Labs.TravelingSalesmanProblem", "labs\Graft.Labs.TravelingSalesmanProblem\Graft.Labs.TravelingSalesmanProblem.csproj", "{45EFB9A7-EABC-4BE7-A7DE-135B25CE7F9C}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Graft.BalanceGraph", "src\Graft.BalanceGraph\Graft.BalanceGraph.csproj", "{65E7A1EB-7127-44F2-A482-4BF10CD32713}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -116,6 +118,14 @@ Global
 		{45EFB9A7-EABC-4BE7-A7DE-135B25CE7F9C}.Release|Any CPU.Build.0 = Release|Any CPU
 		{45EFB9A7-EABC-4BE7-A7DE-135B25CE7F9C}.Release|x64.ActiveCfg = Release|Any CPU
 		{45EFB9A7-EABC-4BE7-A7DE-135B25CE7F9C}.Release|x64.Build.0 = Release|Any CPU
+		{65E7A1EB-7127-44F2-A482-4BF10CD32713}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{65E7A1EB-7127-44F2-A482-4BF10CD32713}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{65E7A1EB-7127-44F2-A482-4BF10CD32713}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{65E7A1EB-7127-44F2-A482-4BF10CD32713}.Debug|x64.Build.0 = Debug|Any CPU
+		{65E7A1EB-7127-44F2-A482-4BF10CD32713}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{65E7A1EB-7127-44F2-A482-4BF10CD32713}.Release|Any CPU.Build.0 = Release|Any CPU
+		{65E7A1EB-7127-44F2-A482-4BF10CD32713}.Release|x64.ActiveCfg = Release|Any CPU
+		{65E7A1EB-7127-44F2-A482-4BF10CD32713}.Release|x64.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
