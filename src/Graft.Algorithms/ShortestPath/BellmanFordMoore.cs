@@ -74,7 +74,7 @@ namespace Graft.Algorithms.ShortestPath
 
             // Build and output path
             IVertex<TV> currentVertex = target;
-            GraphBuilder<TV, TW> builder = new GraphBuilder<TV, TW>().AddVertex(target.Value);
+            GraphBuilder<TV, TW> builder = new GraphBuilder<TV, TW>(true).AddVertex(target.Value);
             while (currentVertex != source)
             {
                 IWeightedEdge<TV, TW> pathEdge = predecessor[currentVertex];

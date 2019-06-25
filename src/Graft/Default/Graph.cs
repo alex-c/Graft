@@ -157,6 +157,11 @@ namespace Graft.Default
             return GetEdgeBetweenVerteces(sourceVertexValue, targetVertexValue);
         }
 
+        public bool AreVertecesConnected(TV sourceVertexValue, TV targetVertexValue)
+        {
+            return Adjacency[sourceVertexValue].FirstOrDefault(t => t.ConnectedVertex(sourceVertexValue).Value.Equals(targetVertexValue)) != null;
+        }
+
         #endregion
     }
 }

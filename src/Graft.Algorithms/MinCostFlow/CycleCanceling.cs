@@ -38,7 +38,7 @@ namespace Graft.Algorithms.MinCostFlow
             // Check for existance of a b-flow
             IEnumerable<IVertex<TV>> sources = graph.GetAllMatchingVerteces(v => v.GetAttribute<double>(Constants.BALANCE) > 0);
             TW sourcesBalance = zeroValue;
-            foreach (var source in sources)
+            foreach (IVertex<TV> source in sources)
             {
                 sourcesBalance = combineValues(sourcesBalance, source.GetAttribute<TW>(Constants.BALANCE));
             }
@@ -91,7 +91,7 @@ namespace Graft.Algorithms.MinCostFlow
                         // Modify b-flow along cycle
                         foreach (IWeightedDirectedEdge<TV, TW> edge in rgCycle)
                         {
-                            if (edge.GetAttribute<EdgeDirection>("direction") == EdgeDirection.Forward)
+                            if (edge.GetAttribute<EdgeDirection>(Constants.DIRECTION) == EdgeDirection.Forward)
                             {
                                 IWeightedDirectedEdge<TV, TW> graphEdge = (IWeightedDirectedEdge<TV, TW>)graph.GetEdgeBetweenVerteces(edge.OriginVertex.Value, edge.TargetVertex.Value);
                                 graphEdge.SetAttribute(Constants.FLOW, combineValues(graphEdge.GetAttribute<TW>(Constants.FLOW), minCycleCapacity));
@@ -127,11 +127,11 @@ namespace Graft.Algorithms.MinCostFlow
 
             // Clone graph
             GraphBuilder<TV, TW> builder = new GraphBuilder<TV, TW>(true);
-            foreach (var vertex in graph.GetAllVerteces())
+            foreach (IVertex<TV> vertex in graph.GetAllVerteces())
             {
                 builder.AddVertex(vertex.Value);
             }
-            foreach (var edge in graph.GetAllEdges())
+            foreach (IWeightedEdge<TV, TW> edge in graph.GetAllEdges())
             {
                 if (edge is IWeightedDirectedEdge<TV, TW> directedEdge)
                 {
@@ -169,14 +169,14 @@ namespace Graft.Algorithms.MinCostFlow
         {
             TW flowValue = zeroValue;
             IVertex<TV> sourceVertex = flow.GetFirstMatchingVertex(v => v.Value.Equals(sourceVertexValue));
-            foreach (var edge in flow.GetEdgesOfVertex(sourceVertex).Where(e => ((IWeightedDirectedEdge<TV, TW>)e).OriginVertex == sourceVertex))
+            foreach (IWeightedEdge<TV, TW> edge in flow.GetEdgesOfVertex(sourceVertex).Where(e => ((IWeightedDirectedEdge<TV, TW>)e).OriginVertex == sourceVertex))
             {
                 flowValue = combineValues(flowValue, edge.Weight);
             }
             return flowValue;
         }
 
-        private static IWeightedGraph<TV, TW> BuildResidualGraph<TV, TW>(IWeightedGraph<TV, TW> graph,
+        public static IWeightedGraph<TV, TW> BuildResidualGraph<TV, TW>(IWeightedGraph<TV, TW> graph,
             Func<TW, TW, TW> substractValues,
             Func<TW, TW> negateValue,
             TW zeroValue)
@@ -193,20 +193,18 @@ namespace Graft.Algorithms.MinCostFlow
                     TW costs = edge.GetAttribute<TW>(Constants.COSTS);
 
                     // Add costs to forward edges
-                    try
+                    if (residualGraph.AreVertecesConnected(directedEdge.OriginVertex.Value, directedEdge.TargetVertex.Value))
                     {
                         residualGraph.GetEdgeBetweenVerteces(directedEdge.OriginVertex.Value, directedEdge.TargetVertex.Value)
                             .SetAttribute(Constants.COSTS, costs);
                     }
-                    catch (VertecesNotConnectedException<TV>) { /* silent */ }
 
                     // Add negative costs to backward edges
-                    try
+                    if (residualGraph.AreVertecesConnected(directedEdge.TargetVertex.Value, directedEdge.OriginVertex.Value))
                     {
                         residualGraph.GetEdgeBetweenVerteces(directedEdge.TargetVertex.Value, directedEdge.OriginVertex.Value)
                             .SetAttribute(Constants.COSTS, negateValue(costs));
                     }
-                    catch (VertecesNotConnectedException<TV>) { /* silent */ }
                 }
                 else
                 {
@@ -225,11 +223,11 @@ namespace Graft.Algorithms.MinCostFlow
         {
             // Clone graph with but set costs as weights
             GraphBuilder<TV, TW> builder = new GraphBuilder<TV, TW>(true);
-            foreach (var vertex in graph.GetAllVerteces())
+            foreach (IVertex<TV> vertex in graph.GetAllVerteces())
             {
                 builder.AddVertex(vertex.Value);
             }
-            foreach (var edge in graph.GetAllEdges())
+            foreach (IWeightedEdge<TV, TW> edge in graph.GetAllEdges())
             {
                 if (edge is IWeightedDirectedEdge<TV, TW> directedEdge)
                 {

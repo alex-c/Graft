@@ -13,5 +13,7 @@ namespace Graft
         new IWeightedEdge<TV, TW> GetEdgeBetweenVerteces(IVertex<TV> source, IVertex<TV> target);
 
         new IWeightedEdge<TV, TW> GetEdgeBetweenVerteces(TV sourceVertexValue, TV targetVertexValue);
+
+        bool AreVertecesConnected(TV sourceVertexValue, TV targetVertexValue);
     }
 }
