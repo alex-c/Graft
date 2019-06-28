@@ -132,7 +132,6 @@ namespace Graft.Algorithms.ShortestPath
                 {
                     if (combineCosts(distance[directedEdge.OriginVertex], directedEdge.Weight).CompareTo(distance[directedEdge.TargetVertex]) < 0)
                     {
-                        distance[directedEdge.TargetVertex] = combineCosts(distance[directedEdge.OriginVertex], directedEdge.Weight);
                         List<IWeightedDirectedEdge<TV, TW>> cycleEdges = new List<IWeightedDirectedEdge<TV, TW>>();
 
                         // Backtrack n steps through predecessors to be sure to sart at an edge that is part of the cycle
@@ -194,7 +193,6 @@ namespace Graft.Algorithms.ShortestPath
         {
             if (combineCosts(distanceMap[sourceVertex], weight).CompareTo(distanceMap[targetVertex]) < 0)
             {
-                distanceMap[targetVertex] = combineCosts(distanceMap[sourceVertex], weight);
                 throw new NegativeCycleException();
             }
         }
