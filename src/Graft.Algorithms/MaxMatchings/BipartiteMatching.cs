@@ -14,8 +14,8 @@ namespace Graft.Algorithms.MaxMatchings
             TV superSourceValue,
             TV superTargetValue) where TV : IEquatable<TV>
         {
-            // Build graph with super nodes and capacity 1
-            IWeightedGraph<TV, int> graphWithSuperNodes = BuildGraphWithSuperNodesAndCapacity<TV>(graph, superSourceValue, superTargetValue, set1, set2, 1);
+            // Build directed graph with super nodes and capacity 1
+            IWeightedGraph<TV, int> graphWithSuperNodes = BuildGraphWithSuperNodesAndCapacity(graph, superSourceValue, superTargetValue, set1, set2, 1);
             IVertex<TV> sourceNode = graphWithSuperNodes.GetFirstMatchingVertex(v => v.Value.Equals(superSourceValue));
             IVertex<TV> targetNode = graphWithSuperNodes.GetFirstMatchingVertex(v => v.Value.Equals(superTargetValue));
 
@@ -28,20 +28,20 @@ namespace Graft.Algorithms.MaxMatchings
                 0);
 
             // Add edges with flow to matching
-            List<IEdge<TV>> matching = new List<IEdge<TV>>();
+            List<IEdge<TV>> matchings = new List<IEdge<TV>>();
             foreach (IVertex<TV> vertex in set1)
             {
                 foreach (IEdge<TV> edge in graph.GetEdgesOfVertex(vertex))
                 {
-                    if (maxFlow.GetEdgeBetweenVerteces(vertex.Value, edge.ConnectedVertex(vertex).Value).GetAttribute<int>("flow") == 1)
+                    if (maxFlow.GetEdgeBetweenVerteces(vertex.Value, edge.ConnectedVertex(vertex).Value).Weight == 1)
                     {
-                        matching.Add(edge);
+                        matchings.Add(edge);
                     }
                 }
             }
 
             // Done - return matching!
-            return matching;
+            return matchings;
         }
 
         private static IWeightedGraph<TV, int> BuildGraphWithSuperNodesAndCapacity<TV>(IGraph<TV> graph,
@@ -52,21 +52,19 @@ namespace Graft.Algorithms.MaxMatchings
             int capacity)
             where TV : IEquatable<TV>
         {
-            // Clone graph
+            // Clone graph verteces
             GraphBuilder<TV, int> builder = new GraphBuilder<TV, int>(true);
             foreach (IVertex<TV> vertex in graph.GetAllVerteces())
             {
                 builder.AddVertex(vertex.Value);
             }
-            foreach (IEdge<TV> edge in graph.GetAllEdges())
+
+            // Add directed edges from set1 verteces to set2 verteces
+            foreach (IVertex<TV> source in sources)
             {
-                if (edge is IWeightedDirectedEdge<TV, TW> directedEdge)
+                foreach (IEdge<TV> edge in graph.GetEdgesOfVertex(source))
                 {
-                    builder.AddEdge(directedEdge.OriginVertex.Value, directedEdge.TargetVertex.Value, directedEdge.Weight);
-                }
-                else
-                {
-                    throw new GraphNotDirectedException();
+                    builder.AddEdge(source.Value, edge.ConnectedVertex(source).Value, capacity);
                 }
             }
 
@@ -77,11 +75,11 @@ namespace Graft.Algorithms.MaxMatchings
             // Add edges from super source and to super target
             foreach (IVertex<TV> source in sources)
             {
-                builder.AddEdge(superSourceValue, source.Value, source.GetAttribute<TW>(Constants.BALANCE));
+                builder.AddEdge(superSourceValue, source.Value, capacity);
             }
             foreach (IVertex<TV> target in targets)
             {
-                builder.AddEdge(target.Value, superTargetValue, negateValue(target.GetAttribute<TW>(Constants.BALANCE)));
+                builder.AddEdge(target.Value, superTargetValue, capacity);
             }
 
             // Build and return result graph
