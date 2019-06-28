@@ -37,12 +37,19 @@ namespace Graft.Algorithms.MinCostFlow
 
             // Check for existance of a b-flow
             IEnumerable<IVertex<TV>> sources = graph.GetAllMatchingVerteces(v => v.GetAttribute<double>(Constants.BALANCE) > 0);
+            IEnumerable<IVertex<TV>> targets = graph.GetAllMatchingVerteces(v => v.GetAttribute<double>(Constants.BALANCE) < 0);
             TW sourcesBalance = zeroValue;
+            TW targetsBalance = zeroValue;
             foreach (IVertex<TV> source in sources)
             {
                 sourcesBalance = combineValues(sourcesBalance, source.GetAttribute<TW>(Constants.BALANCE));
             }
-            if (maxFlowValue.Equals(sourcesBalance))
+            foreach (IVertex<TV> target in targets)
+            {
+                targetsBalance = combineValues(targetsBalance, target.GetAttribute<TW>(Constants.BALANCE));
+            }
+            if (maxFlowValue.Equals(sourcesBalance) &&
+                maxFlowValue.Equals(negateValue(targetsBalance)))
             {
                 // Copy flow values from graph with super nodes to original graph
                 foreach (IWeightedEdge<TV, TW> edge in graphWithSuperNodes.GetAllEdges())
