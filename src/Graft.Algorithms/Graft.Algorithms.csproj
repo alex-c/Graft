@@ -11,4 +11,8 @@
     <ProjectReference Include="..\Graft\Graft.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="MaxMatchings\" />
+  </ItemGroup>
+
 </Project>

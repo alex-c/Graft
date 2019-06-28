@@ -57,6 +57,12 @@
     <None Update="graphs\Graph_gross.txt">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
+    <None Update="graphs\matchings\Matching2_100_100.txt">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="graphs\matchings\Matching_100_100.txt">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
     <None Update="graphs\max_flow\Fluss.txt">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
@@ -110,6 +116,7 @@
   <ItemGroup>
     <Folder Include="graphs\complete\" />
     <Folder Include="graphs\max_flow\" />
+    <Folder Include="graphs\matchings\" />
     <Folder Include="graphs\paths\" />
   </ItemGroup>
 
