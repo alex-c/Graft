@@ -55,12 +55,12 @@ namespace Graft.Algorithms.Tests
                 if (i < firstSetSize)
                 {
                     set1.Add(vertex);
+                    i++;
                 }
                 else
                 {
                     set2.Add(vertex);
                 }
-                i++;
             }
             return (set1, set2);
         }
